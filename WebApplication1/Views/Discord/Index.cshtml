@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <a href="Home/Discord">Discord login</a>
+    <p>Wanna login with Reddit or Discord?</p>
+    <a href="Home/Reddit">Reddit login</a>
+
+    <a href="Discord/GetRole">Get your discord role</a>
+</div>
+
+@if (User.Identity.AuthenticationType == "Discord")
+{
+    <p>
+        You are signed in @User.Identity.Name with Discord
+    </p>
+    <table>
+        <thead>
+        <tr>
+            <th>Claim Type </th>
+            <th>Claim Value</th>
+            <th>Issuer</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var x in User.Identities)
+        {
+            <tr>
+                <td>@x.AuthenticationType</td>
+            </tr>
+            @foreach (var c in x.Claims)
+             {
+                 <tr>
+                     <td>@c.Type</td>
+                     <td>@c.Value</td>
+                     <td>@c.Issuer</td>
+                 </tr>
+             }
+        }
+        </tbody>
+    </table>
+}
