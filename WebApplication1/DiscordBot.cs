@@ -73,11 +73,5 @@ namespace WebApplication1
 
             await _commands.ExecuteAsync(context, argPos, _serviceProvider);
         }
-
-        public async Task AssignRole(ulong roleId, ulong userId)
-        {
-            var user = _client.Guilds.FirstOrDefault().Users.FirstOrDefault(x => x.Id == userId);
-            await user.AddRoleAsync(_client.Guilds.FirstOrDefault().GetRole(roleId));
-        }
     }
 }
