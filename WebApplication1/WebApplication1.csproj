@@ -20,4 +20,34 @@
         <PackageReference Include="Newtonsoft.Json" Version="12.0.2"/>
     </ItemGroup>
 
+
+    <ItemGroup>
+        <_ResolveComReferenceCache Remove="obj\Debug\netcoreapp2.2\WebApplication1.csproj.ResolveComReference.cache"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <IntermediateAssembly Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <_DebugSymbolsIntermediatePath Remove="obj\Debug\netcoreapp2.2\WebApplication1.pdb"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <_DeploymentManifestEntryPoint Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <ApplicationManifest Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll.manifest"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <DeployManifest Remove="obj\Debug\netcoreapp2.2\WebApplication1.application"/>
+    </ItemGroup>
+
 </Project>
