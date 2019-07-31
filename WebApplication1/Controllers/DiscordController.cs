@@ -38,14 +38,14 @@ namespace WebApplication1.Controllers
         }
 
         [Authorize(AuthenticationSchemes = OpenIdConnectDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> GetRole()
+        public async Task<IActionResult> GetRole(RoleService.DiscordRoles role)
         {
             var id = HttpContext.Session.GetString("UserId");
             if (id == null)
                 return Challenge(
                     new AuthenticationProperties {RedirectUri = "/Discord"}, DiscordDefaults.AuthenticationScheme);
 
-            await _roleService.AssignRoleAsync(Convert.ToUInt64(id));
+            await _roleService.AssignRoleAsync(Convert.ToUInt64(id), role);
             return Ok("Successfully added");
         }
     }

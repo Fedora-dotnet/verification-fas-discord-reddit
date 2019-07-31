@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Discord.OAuth2;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +16,9 @@ namespace WebApplication1.Controllers
 
         public IActionResult Roles()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+                return View();
+            else return Unauthorized();
         }
 
         public IActionResult Fedora()
