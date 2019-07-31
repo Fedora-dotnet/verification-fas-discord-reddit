@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +24,6 @@ namespace WebApplication1
             _client = client;
             _commands = commands;
 
-
             _serviceProvider = new ServiceCollection()
                 .AddSingleton(_client)
                 .BuildServiceProvider();
@@ -35,8 +33,6 @@ namespace WebApplication1
         {
             await _client.LoginAsync(TokenType.Bot, _config["DiscordToken"]);
             await _client.StartAsync();
-
-            await _client.SetGameAsync("By: HoundThe");
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
