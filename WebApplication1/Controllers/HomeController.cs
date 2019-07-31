@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
         public IActionResult Fedora()
         {
             return Challenge(new AuthenticationProperties {RedirectUri = "/Home/Roles"},
-                DiscordDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+                OpenIdConnectDefaults.AuthenticationScheme);
         }
 
 
