@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -9,21 +8,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using WebApplication1.Configuration;
 using WebApplication1.EXtensions;
+using WebApplication1.Services;
 
 namespace WebApplication1
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        private IConfiguration Configuration { get; }
+        public readonly Config Config;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            Environment = env;
+            Config = Configuration.Get<Config>();
         }
-
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -44,40 +44,39 @@ namespace WebApplication1
                 })
                 .AddOpenIdConnect(o =>
                 {
-                    o.ClientId = Configuration["FasId"];
-                    o.ClientSecret = Configuration["FasSecret"];
+                    o.ClientId = Config.FasId;
+                    o.ClientSecret = Config.FasSecret;
                     o.Authority = "https://iddev.fedorainfracloud.org";
                     o.Scope.Add("https://id.fedoraproject.org/scope/groups");
                     o.Scope.Add("https://id.fedoraproject.org/scope/cla");
                     o.ClaimActions.MapJsonKey("cla", "cla");
                     o.ClaimActions.MapJsonKey("nickname", "nickname");
                     o.ClaimActions.MapJsonKey("groups", "groups");
-//                    o.SaveTokens = true;
-//                    o.RequireHttpsMetadata = false;
                     o.CallbackPath = "/signin-oidc";
                     o.ResponseType = OpenIdConnectResponseType.Code;
-//                    o.CorrelationCookie.IsEssential = true;
+                    o.CorrelationCookie.IsEssential = true;
                     o.GetClaimsFromUserInfoEndpoint = true;
-//                    o.CorrelationCookie.Expiration = TimeSpan.Zero;
-//                    o.ClaimActions.MapAll();
-                });
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                })
                 .AddDiscord(x =>
                 {
-                    x.AppId = Configuration["DiscordId"];
-                    x.AppSecret = Configuration["DiscordSecret"];
+                    x.AppId = Config.DiscordId;
+                    x.AppSecret = Config.DiscordSecret;
                     x.SaveTokens = true;
                     x.CorrelationCookie.IsEssential = true;
                     x.ClaimActions.MapAll();
                 });
 
+
             services.AddDistributedMemoryCache();
-            services.AddSession(options => { options.Cookie.IsEssential = true; });
-
+            services.AddSession(options =>
+            {
+                options.Cookie.IsEssential = true;
+                options.Cookie.Name = "Session";
+            });
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
-
+            services.AddSingleton(Config);
+            services.AddSingleton<RoleService>();
             services.AddDiscordBot();
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -96,18 +95,6 @@ namespace WebApplication1
             }
 
             app.UseAuthentication();
-            app.Use(async (context, next) =>
-            {
-                if (context.User != null && context.User.Identity.IsAuthenticated)
-                {
-                    // add claims here 
-                    context.User.AddIdentity(context.User.Identities.FirstOrDefault());
-
-//                    context.User.Identities.FirstOrDefault(x => x.AuthenticationType == "myAuth").Claims.Append(new Claim("type-x","value-x"));
-                }
-
-                await next();
-            });
             app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
