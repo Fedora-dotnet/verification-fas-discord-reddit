@@ -1,37 +1,27 @@
 using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication1.Configuration;
 
 namespace WebApplication1
 {
     public class DiscordBot : BackgroundService
     {
         private readonly DiscordSocketClient _client;
-        private readonly CommandService _commands;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _config;
+        private readonly Config _config;
 
-        public DiscordBot(IConfiguration config, DiscordSocketClient client, CommandService commands)
+        public DiscordBot(Config config, DiscordSocketClient client)
         {
             _config = config;
             _client = client;
-            _commands = commands;
-
-            _serviceProvider = new ServiceCollection()
-                .AddSingleton(_client)
-                .BuildServiceProvider();
         }
 
         private async Task Run()
         {
-            await _client.LoginAsync(TokenType.Bot, _config["DiscordToken"]);
+            await _client.LoginAsync(TokenType.Bot, _config.DiscordToken);
             await _client.StartAsync();
         }
 
@@ -40,8 +30,6 @@ namespace WebApplication1
             Console.WriteLine("DiscordBot is up and running");
 
             _client.Log += Log;
-            _client.MessageReceived += HandleCommand;
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
 
             await Run();
 
@@ -52,22 +40,6 @@ namespace WebApplication1
         {
             Console.WriteLine(arg.Message);
             return Task.CompletedTask;
-        }
-
-        private async Task HandleCommand(SocketMessage messageParam)
-        {
-            var message = messageParam as SocketUserMessage;
-            if (message == null) return;
-
-            int argPos = 0;
-
-            if (!(message.HasCharPrefix('!', ref argPos) ||
-                  message.HasMentionPrefix(_client.CurrentUser, ref argPos))) return;
-
-            await message.Channel.SendMessageAsync("Hello");
-            var context = new SocketCommandContext(_client, message);
-
-            await _commands.ExecuteAsync(context, argPos, _serviceProvider);
         }
     }
 }
