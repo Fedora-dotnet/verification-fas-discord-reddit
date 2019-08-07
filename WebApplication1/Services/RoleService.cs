@@ -1,33 +1,33 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
+using WebApplication1.Configuration;
 
 namespace WebApplication1.Services
 {
     public class RoleService
     {
         private readonly SocketGuild _guild;
-        private Dictionary<DiscordRoles, IRole> _rolesDictionary = new Dictionary<DiscordRoles, IRole>();
+        public readonly Config Config;
 
-        public enum DiscordRoles
+        public RoleService(Config config, DiscordSocketClient client)
         {
-            Contributor,
-            Dotnet
+            Config = config;
+            _guild = client.Guilds.FirstOrDefault(x => x.Id == Config.GuildId);
         }
 
-        public RoleService(IConfiguration configuration, DiscordSocketClient client)
+        public async Task AssignRoleAsync(ulong userId, IEnumerable<string> roles)
         {
-            _guild = client.Guilds.FirstOrDefault(x => x.Id == Convert.ToUInt64(configuration["GuildId"]));
-            _rolesDictionary.Add(DiscordRoles.Contributor,
-                _guild?.GetRole(Convert.ToUInt64(configuration["ContributorId"])));
-            _rolesDictionary.Add(DiscordRoles.Dotnet, _guild?.GetRole(Convert.ToUInt64(configuration["DotnetId"])));
-        }
+            var rolesToAdd = new List<IRole>();
+            foreach (var x in roles)
+            {
+                var roleId = Config.DiscordRoles[x];
+                rolesToAdd.Add(_guild.GetRole(roleId));
+            }
 
-        public async Task AssignRoleAsync(ulong userId, DiscordRoles role)
-            => await _guild.GetUser(userId).AddRoleAsync(_rolesDictionary[role]);
+            await _guild.GetUser(userId).AddRolesAsync(rolesToAdd);
+        }
     }
 }
