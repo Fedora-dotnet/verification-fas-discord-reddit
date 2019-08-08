@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RedditSharp;
 using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
@@ -11,10 +12,12 @@ namespace WebApplication1.Controllers
     public class RoleController : Controller
     {
         private readonly RoleService _roleService;
+        private readonly Reddit _redditService;
 
-        public RoleController(RoleService roleService)
+        public RoleController(RoleService roleService, Reddit redditService)
         {
             _roleService = roleService;
+            _redditService = redditService;
         }
 
         public async Task<IActionResult> Discord()
@@ -66,15 +69,22 @@ namespace WebApplication1.Controllers
             // if user successfully authed at discord
             if (User.Identity.IsAuthenticated)
             {
-                HttpContext.Session.SetString("RedditUsername",
-                    User.Claims.FirstOrDefault(x => x.Type == "name")?.Value);
-                string userId = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-                HttpContext.Session.SetString("RedditId", userId);
+                string redditName = User.Claims.FirstOrDefault(x => x.Type == "name")?.Value;
+                HttpContext.Session.SetString("RedditUsername", redditName);
 
                 var loginType = HttpContext.Session.GetString("BaseLoginType");
 
                 if (loginType == "Fedora")
                 {
+                    string isContributor = HttpContext.Session.GetString("IsContributor");
+                    var addedRoles = new List<string>();
+                    if (isContributor == "True")
+                    {
+                        await AddRedditFlair(redditName, "Contributor");
+                        addedRoles.Add("Contributor");
+                    }
+
+                    ViewData.Add("roles", addedRoles);
                     return View("Reddit");
                 }
                 else if (loginType == "RedHat")
@@ -87,7 +97,8 @@ namespace WebApplication1.Controllers
 
         public async Task AddRedditFlair(string username, string flair)
         {
-            throw new NotImplementedException();
+            var subreddit = await _redditService.GetSubredditAsync("/r/fedora_verification");
+            await subreddit.SetUserFlairAsync("hound_the", "", flair);
         }
 
         public async Task AddDiscordRoles(IEnumerable<string> roles, ulong userId)

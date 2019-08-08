@@ -12,6 +12,12 @@ namespace WebApplication1.Configuration
         public string RedditId { get; set; }
         public string RedditSecret { get; set; }
         public ulong GuildId { get; set; }
+
+        public string RedditBotId { get; set; }
+        public string RedditBotSecret { get; set; }
+        public string RedditBotName { get; set; }
+        public string RedditBotPassword { get; set; }
+
         public Dictionary<string, ulong> DiscordRoles { get; set; }
         public Dictionary<string, string> RolesConditions { get; set; }
     }

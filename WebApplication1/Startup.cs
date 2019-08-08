@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using RedditSharp;
 using WebApplication1.Configuration;
 using WebApplication1.EXtensions;
 using WebApplication1.Services;
@@ -74,8 +75,12 @@ namespace WebApplication1
                     x.CallbackPath = "/signin-reddit";
                     x.Scope.Add("identity");
                 });
+            // TODO remove hardcoded URI
+            var webAgent = new BotWebAgent(Config.RedditBotName, Config.RedditBotPassword, Config.RedditBotId,
+                Config.RedditBotSecret, "https://127.0.0.1:5001/");
+            var reddit = new Reddit(webAgent, false);
 
-
+            services.AddSingleton(reddit);
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
