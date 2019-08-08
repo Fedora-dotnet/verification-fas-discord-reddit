@@ -26,56 +26,38 @@
              <h4>
                  Do you want add roles/flair in
                  <b>
-                     <a href="/Role/DiscordLogin">Discord</a>
-                 </b> or <b>Reddit</b>?
+                     <a href="/Auth/DiscordLogin">Discord</a>
+                 </b> or
+                 <b>
+                     <a href="/Auth/RedditLogin">Reddit</a>
+                 </b>?
              </h4>
          }
         @if (Model?.BaseLogintype == "Redhat")
          {
          }
-@*          <p> *@
-@*              You are signed in <b>@User.Claims.FirstOrDefault(x => x.Type == "nickname")?.Value</b>!<br> <br> *@
-@*              @if (User.Claims.FirstOrDefault(x => x.Value.Contains("cla/done")) != null) *@
+@* *@
+@*      <table> *@
+@*              <thead> *@
+@*              <tr> *@
+@*                  <th>Claim Type </th> *@
+@*                  <th>Claim Value</th> *@
+@*                  <th>Issuer</th> *@
+@*              </tr> *@
+@*              </thead> *@
+@*              <tbody> *@
+@*              @ViewData["Contributor"] *@
+@*              @ViewData["Groups"] *@
+@* *@
+@*              @foreach (var c in User.Identities.First().Claims) *@
 @*              { *@
-@*                  <br> *@
-@*                  <b>Get your <a href="/Discord/GetRole?role=@RoleService.DiscordRoles.Contributor"> Contributor role</a></b> *@
+@*                  <tr> *@
+@*                      <td>@c.Type</td> *@
+@*                      <td>@c.Value</td> *@
+@*                      <td>@c.Issuer</td> *@
+@*                  </tr> *@
 @*              } *@
-@*              @if (User.Claims.FirstOrDefault(x => x.Value.Contains("dotnet")) != null) *@
-@*              { *@
-@*                  <br> *@
-@*                  <b>Get your <a href="/Discord/GetRole?role=@RoleService.DiscordRoles.Dotnet"> Dotnet member role</a></b> *@
-@*              } *@
-@*          </p> *@
-
-@*      *@
-@*     <table> *@
-@*             <thead> *@
-@*             <tr> *@
-@*                 <th>Claim Type </th> *@
-@*                 <th>Claim Value</th> *@
-@*                 <th>Issuer</th> *@
-@*             </tr> *@
-@*             </thead> *@
-@*             <tbody> *@
-@*             @foreach (var x in Context.Session.Keys) *@
-@*             { *@
-@*                 <tr> *@
-@*                     <td>@x</td> *@
-@*                     <td>@Context.Session.GetString(x) </td> *@
-@*                 </tr> *@
-@*             } *@
-@*             @ViewData["Contributor"] *@
-@*             @ViewData["Groups"] *@
-@*              *@
-@*             @foreach (var c in User.Identities.First().Claims) *@
-@*             { *@
-@*                 <tr> *@
-@*                     <td>@c.Type</td> *@
-@*                     <td>@c.Value</td> *@
-@*                     <td>@c.Issuer</td> *@
-@*                 </tr> *@
-@*             } *@
-@*             </tbody> *@
-@*         </table> *@
+@*              </tbody> *@
+@*          </table> *@
     }
 </div>

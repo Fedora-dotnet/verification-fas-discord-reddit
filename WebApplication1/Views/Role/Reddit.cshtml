@@ -8,5 +8,11 @@
     @if (User.Identity.IsAuthenticated)
     {
         <h2>Hello redditor, pick which one these flairs do you want:</h2>
+        @foreach (var x in (IEnumerable<string>) ViewData["roles"])
+         {
+             <p>
+                 @x<br>
+             </p>
+         }
     }
 </div>
