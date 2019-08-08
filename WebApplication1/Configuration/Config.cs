@@ -9,6 +9,8 @@ namespace WebApplication1.Configuration
         public string DiscordSecret { get; set; }
         public string FasId { get; set; }
         public string FasSecret { get; set; }
+        public string RedditId { get; set; }
+        public string RedditSecret { get; set; }
         public ulong GuildId { get; set; }
         public Dictionary<string, ulong> DiscordRoles { get; set; }
         public Dictionary<string, string> RolesConditions { get; set; }
