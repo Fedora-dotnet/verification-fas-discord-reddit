@@ -1,0 +1,12 @@
+@model UserModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h2>Hello redditor, pick which one these flairs do you want:</h2>
+    }
+</div>

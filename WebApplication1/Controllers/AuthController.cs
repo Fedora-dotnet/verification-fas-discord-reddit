@@ -1,4 +1,5 @@
 using System.Linq;
+using AspNet.Security.OAuth.Reddit;
 using Discord.OAuth2;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -15,6 +16,19 @@ namespace WebApplication1.Controllers
         public AuthController(RoleService roleService)
         {
             _roleService = roleService;
+        }
+
+        public IActionResult DiscordLogin()
+        {
+            return Challenge(
+                new AuthenticationProperties {RedirectUri = "/Role/Discord"}, DiscordDefaults.AuthenticationScheme);
+        }
+
+        public IActionResult RedditLogin()
+        {
+            return Challenge(
+                new AuthenticationProperties {RedirectUri = "/Role/Reddit"},
+                RedditAuthenticationDefaults.AuthenticationScheme);
         }
 
         public IActionResult Index()
@@ -48,12 +62,6 @@ namespace WebApplication1.Controllers
             }
 
             return Unauthorized();
-        }
-
-        public IActionResult DiscordLogin()
-        {
-            return Challenge(
-                new AuthenticationProperties {RedirectUri = "/"}, DiscordDefaults.AuthenticationScheme);
         }
 
         public IActionResult FedoraLogin()

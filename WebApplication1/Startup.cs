@@ -61,9 +61,18 @@ namespace WebApplication1
                 {
                     x.AppId = Config.DiscordId;
                     x.AppSecret = Config.DiscordSecret;
-                    x.SaveTokens = true;
                     x.CorrelationCookie.IsEssential = true;
                     x.ClaimActions.MapAll();
+                })
+                .AddReddit(x =>
+                {
+                    x.CorrelationCookie.IsEssential = true;
+                    x.ClientId = Config.RedditId;
+                    x.ClientSecret = Config.RedditSecret;
+                    x.ClaimActions.MapJsonKey("id", "id");
+                    x.ClaimActions.MapJsonKey("name", "name");
+                    x.CallbackPath = "/signin-reddit";
+                    x.Scope.Add("identity");
                 });
 
 
