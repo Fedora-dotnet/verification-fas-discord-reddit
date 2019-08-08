@@ -6,7 +6,7 @@
 
 <div class="text-center">
     @* <h1 class="display-4">Welcome</h1> *@
-    @if (Model.BaseLogintype != "Fedora")
+    @if (Model?.BaseLogintype != "Fedora")
     {
         <h1>
             <a href="/auth/FedoraLogin">Login to FAS</a>
@@ -15,7 +15,7 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        @if (Model.BaseLogintype == "Fedora")
+        @if (Model?.BaseLogintype == "Fedora")
          {
              <h2>Welcome Fedora user @Model.FasNickname</h2>
              <p>I see you are member of all these groups: @Model.Groups<br></p>
@@ -30,7 +30,7 @@
                  </b> or <b>Reddit</b>?
              </h4>
          }
-        @if (Model.BaseLogintype == "Redhat")
+        @if (Model?.BaseLogintype == "Redhat")
          {
          }
 @*          <p> *@
