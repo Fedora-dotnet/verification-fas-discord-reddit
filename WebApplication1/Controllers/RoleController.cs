@@ -25,34 +25,31 @@ namespace WebApplication1.Controllers
             // if user successfully authed at discord
             if (User.Identity.IsAuthenticated)
             {
-                HttpContext.Session.SetString("DiscordUsername",
-                    User.Claims.FirstOrDefault(x => x.Type == "username")?.Value);
+                string username = User.Claims.FirstOrDefault(x => x.Type == "username")?.Value;
                 string userId = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-                HttpContext.Session.SetString("DiscordId", userId);
-                string isContributor = HttpContext.Session.GetString("IsContributor");
+                SaveDiscordClaims(username, userId);
                 var loginType = HttpContext.Session.GetString("BaseLoginType");
 
                 if (loginType == "Fedora")
                 {
+                    GetFedoraClaims(out string name, out string groups);
                     var roleConditions = new List<string>();
 
-                    var roles = HttpContext.Session.GetString("Groups").Split();
+                    var roles = groups.Split();
                     roleConditions.AddRange(roles);
 
                     var rolesName = new List<string>();
 
-                    if (isContributor == "True")
-                    {
-                        rolesName.Add("Contributor");
-                    }
-
                     foreach (var x in roleConditions)
                     {
-                        rolesName.Add(_roleService.Config.RolesConditions[x]);
+                        // Check if the appropriate role exists so we wont get exceptions
+                        if (_roleService.Config.RolesConditions.ContainsKey(x))
+                            rolesName.Add(_roleService.Config.RolesConditions[x]);
                     }
 
                     await AddDiscordRoles(rolesName, Convert.ToUInt64(userId));
 
+                    // weakly typed, for now?
                     ViewData.Add("AddedRoles", rolesName);
                     return View("Discord");
                 }
@@ -64,7 +61,7 @@ namespace WebApplication1.Controllers
             return Unauthorized();
         }
 
-        public async Task<IActionResult> Reddit()
+        public IActionResult Reddit()
         {
             // if user successfully authed at discord
             if (User.Identity.IsAuthenticated)
@@ -76,15 +73,31 @@ namespace WebApplication1.Controllers
 
                 if (loginType == "Fedora")
                 {
-                    string isContributor = HttpContext.Session.GetString("IsContributor");
-                    var addedRoles = new List<string>();
-                    if (isContributor == "True")
+                    GetFedoraClaims(out string name, out string groups);
+
+                    var roleConditions = new List<string>();
+
+                    var roles = groups.Split();
+                    roleConditions.AddRange(roles);
+
+                    var rolesName = new List<string>();
+
+                    foreach (var x in roleConditions)
                     {
-                        await AddRedditFlair(redditName, "Contributor");
-                        addedRoles.Add("Contributor");
+                        // Check if the appropriate role exists so we wont get exceptions
+                        if (_roleService.Config.RedditFlairs.ContainsKey(x))
+                            rolesName.Add(_roleService.Config.RedditFlairs[x]);
                     }
 
-                    ViewData.Add("roles", addedRoles);
+//                        await AddRedditFlair(redditName, "Contributor");
+//                        addedRoles.Add("Contributor");
+//                    
+//                    var addedRoles = new List<string>();
+//                    if (isContributor == "True")
+//                    {
+//                    }
+
+                    ViewData.Add("roles", rolesName);
                     return View("Reddit");
                 }
                 else if (loginType == "RedHat")
@@ -95,16 +108,36 @@ namespace WebApplication1.Controllers
             return Unauthorized();
         }
 
-        public async Task AddRedditFlair(string username, string flair)
+        public async Task<IActionResult> GetRedditFlair(string flair)
         {
-            var subreddit = await _redditService.GetSubredditAsync("/r/fedora_verification");
-            await subreddit.SetUserFlairAsync("hound_the", "", flair);
+            // validate the parameter from spoofing
+            if (!_roleService.Config.RedditFlairs.ContainsValue(flair))
+            {
+                return Unauthorized("Nice try");
+            }
+
+            var username = HttpContext.Session.GetString("RedditUsername");
+            var subreddit = await _redditService.GetSubredditAsync(_roleService.Config.Subreddit);
+            await subreddit.SetUserFlairAsync(username, "", flair);
+            return Ok("Sucessfully added");
         }
 
         public async Task AddDiscordRoles(IEnumerable<string> roles, ulong userId)
         {
             // TODO Hide it from url access 
             await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), roles);
+        }
+
+        public void SaveDiscordClaims(string name, string id)
+        {
+            HttpContext.Session.SetString("DiscordUsername", name);
+            HttpContext.Session.SetString("DiscordId", id);
+        }
+
+        public void GetFedoraClaims(out string name, out string groups)
+        {
+            name = HttpContext.Session.GetString("FasNickname");
+            groups = HttpContext.Session.GetString("Groups");
         }
     }
 }

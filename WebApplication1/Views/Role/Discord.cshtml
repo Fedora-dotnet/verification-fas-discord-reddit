@@ -8,7 +8,7 @@
 <div class="text-center">
     @if (User.Identity.IsAuthenticated)
     {
-        <h2>You've been added these roles:</h2>
+        <h2>You've been given these roles:</h2>
         @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
          {
              @x<br>

@@ -38,25 +38,19 @@ namespace WebApplication1.Controllers
                 // maybe unhardcode this?
                 if (User.HasClaim(x => x.Issuer == "OpenIdConnect"))
                 {
-                    string isContributor;
-                    if (User.HasClaim(x => x.Type == "cla" && x.Value.Contains("done")) &&
-                        User.HasClaim(x => x.Type == "cla" && x.Value.Contains("fpca")))
-                        isContributor = "True";
-                    else isContributor = "False";
+                    string groups = "";
+                    if (User.HasClaim(x => x.Type == "cla" && x.Value.Contains("done")))
+                    {
+                        groups += "cla/done ";
+                    }
 
-                    HttpContext.Session.SetString("IsContributor", isContributor);
-                    HttpContext.Session.SetString("Groups", User.Claims.FirstOrDefault(x => x.Type == "groups")?.Value);
+                    // string builder might be better
+                    groups += User.Claims.FirstOrDefault(x => x.Type == "groups")?.Value;
+
+                    HttpContext.Session.SetString("Groups", groups);
                     HttpContext.Session.SetString("FasNickname",
                         User.Claims.FirstOrDefault(x => x.Type == "nickname")?.Value);
                     HttpContext.Session.SetString("BaseLoginType", "Fedora");
-                    return RedirectToAction("Index", "Home");
-                }
-
-                if (User.HasClaim(x => x.Issuer == "Discord"))
-                {
-                    HttpContext.Session.SetString("DiscordId", User.Claims.FirstOrDefault(x => x.Type == "id")?.Value);
-                    HttpContext.Session.SetString("DiscordUsername",
-                        User.Claims.FirstOrDefault(x => x.Type == "username")?.Value);
                     return RedirectToAction("Index", "Home");
                 }
             }

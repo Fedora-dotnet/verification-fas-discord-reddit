@@ -14,13 +14,10 @@ namespace WebApplication1.Controllers
             {
                 var userModel = new UserModel
                 {
-                    IsContributor = HttpContext.Session.GetString("IsContributor") == "True",
                     Groups = HttpContext.Session.GetString("Groups"),
-//                    DiscordId = HttpContext.Session.GetString("DiscordId"),
                     BaseLogintype = HttpContext.Session.GetString("BaseLoginType"),
                     FasNickname = HttpContext.Session.GetString("FasNickname"),
                     RedhatNickname = HttpContext.Session.GetString("RedhatNickname")
-//                    DiscordUsername = HttpContext.Session.GetString("DiscordUsername")
                 };
                 return View(userModel);
             }
