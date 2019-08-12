@@ -17,12 +17,9 @@
     {
         @if (Model?.BaseLogintype == "Fedora")
          {
-             <h2>Welcome Fedora user @Model.FasNickname</h2>
-             <p>I see you are member of all these groups: @Model.Groups<br></p>
-             @if (Model.IsContributor)
-              {
-                  <p>And you are also a contributor</p>
-              }
+             <h2>Welcome <b>@Model.FasNickname</b></h2>
+@*              <p>I see you are member of all these groups: @Model.Groups<br></p> *@
+
              <h4>
                  Do you want add roles/flair in
                  <b>
