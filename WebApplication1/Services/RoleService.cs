@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,14 +21,23 @@ namespace WebApplication1.Services
 
         public async Task AssignRoleAsync(ulong userId, IEnumerable<string> roles)
         {
-            var rolesToAdd = new List<IRole>();
-            foreach (var x in roles)
+            // TODO find the nullref bug
+            try
             {
-                var roleId = Config.DiscordRoles[x];
-                rolesToAdd.Add(_guild.GetRole(roleId));
-            }
+                var rolesToAdd = new List<IRole>();
+                foreach (var x in roles)
+                {
+                    var roleId = Config.DiscordRoles[x];
+                    rolesToAdd.Add(_guild.GetRole(roleId));
+                }
 
-            await _guild.GetUser(userId).AddRolesAsync(rolesToAdd);
+                await _guild.GetUser(userId).AddRolesAsync(rolesToAdd);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

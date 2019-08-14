@@ -3,16 +3,18 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
+<div>
     @if (User.Identity.IsAuthenticated)
     {
-        <h2>Hello redditor, pick which one these flairs do you want:</h2>
-        @foreach (var x in (List<string>) ViewData["roles"])
-         {
-             <p>
-                 <a href="/Role/GetRedditFlair?flair=@x">@x</a><br>
-             </p>
-         }
+        <h2 class="text-xl-center">Pick which one these flairs do you want:</h2>
+
+        <ul class="text-center">
+            @foreach (var x in (List<string>) ViewData["roles"])
+            {
+                <li class="text-center">
+                    <a href="/Role/GetRedditFlair?flair=@x">@x</a>
+                </li>
+            }
+        </ul>
     }
 </div>

@@ -9,30 +9,34 @@
     @if (Model?.BaseLogintype != "Fedora")
     {
         <h1>
-            <a href="/auth/FedoraLogin">Login to FAS</a>
+            <a href="/auth/FedoraLogin" class="button">Login to FAS</a>
         </h1>
     }
 
     @if (User.Identity.IsAuthenticated)
     {
         @if (Model?.BaseLogintype == "Fedora")
-         {
-             <h2>Welcome <b>@Model.FasNickname</b></h2>
+        {
+            <h2>Welcome <b>@Model.FasNickname</b></h2>
 @*              <p>I see you are member of all these groups: @Model.Groups<br></p> *@
 
-             <h4>
-                 Do you want add roles/flair in
-                 <b>
-                     <a href="/Auth/DiscordLogin">Discord</a>
-                 </b> or
-                 <b>
-                     <a href="/Auth/RedditLogin">Reddit</a>
-                 </b>?
-             </h4>
-         }
+            <h4>
+                Where do you want to get your roles?<br>
+                <b>
+                    <a href="/Auth/DiscordLogin" class="buttonlogo" style="margin-right: 50px">
+                        <img src="css/discord.png" style="width: 100px"/>
+                    </a>
+                </b>
+                <b>
+                    <a href="/Auth/RedditLogin" class="buttonlogo">
+                        <img src="css/reddit.png" style="width: 80px"/>
+                    </a>
+                </b>
+            </h4>
+        }
         @if (Model?.BaseLogintype == "Redhat")
-         {
-         }
+        {
+        }
 @* *@
 @*      <table> *@
 @*              <thead> *@
