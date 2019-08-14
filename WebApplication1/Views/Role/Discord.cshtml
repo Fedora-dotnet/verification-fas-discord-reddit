@@ -9,9 +9,11 @@
     @if (User.Identity.IsAuthenticated)
     {
         <h2>You've been given these roles:</h2>
-        @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
-         {
-             @x<br>
-         }
+        <ul>
+            @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
+            {
+                <li>@x</li>
+            }
+        </ul>
     }
 </div>

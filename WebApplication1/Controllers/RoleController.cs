@@ -22,8 +22,10 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Discord()
         {
+            // user can spam reload on the action and trigger the rate limit,
+
             // if user successfully authed at discord
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Discord"))
             {
                 string username = User.Claims.FirstOrDefault(x => x.Type == "username")?.Value;
                 string userId = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
@@ -64,7 +66,7 @@ namespace WebApplication1.Controllers
         public IActionResult Reddit()
         {
             // if user successfully authed at discord
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Reddit"))
             {
                 string redditName = User.Claims.FirstOrDefault(x => x.Type == "name")?.Value;
                 HttpContext.Session.SetString("RedditUsername", redditName);
@@ -88,14 +90,6 @@ namespace WebApplication1.Controllers
                         if (_roleService.Config.RedditFlairs.ContainsKey(x))
                             rolesName.Add(_roleService.Config.RedditFlairs[x]);
                     }
-
-//                        await AddRedditFlair(redditName, "Contributor");
-//                        addedRoles.Add("Contributor");
-//                    
-//                    var addedRoles = new List<string>();
-//                    if (isContributor == "True")
-//                    {
-//                    }
 
                     ViewData.Add("roles", rolesName);
                     return View("Reddit");
