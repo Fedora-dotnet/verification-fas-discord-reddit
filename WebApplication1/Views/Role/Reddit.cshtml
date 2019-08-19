@@ -6,7 +6,7 @@
 <div>
     @if (User.Identity.IsAuthenticated)
     {
-        <h2 class="text-xl-center">Pick which one these flairs do you want:</h2>
+        <h2 class="text-center">Pick which one these flairs do you want:</h2>
 
         <ul class="text-center">
             @foreach (var x in (List<string>) ViewData["roles"])

@@ -8,7 +8,7 @@
 <div class="text-center">
     @if (User.Identity.IsAuthenticated)
     {
-        <h2>You've been given these roles:</h2>
+        <h2>You've been given these <img src="/css/discord.png" style="width: 30px" alt="discord logo"/> roles:</h2>
         <ul>
             @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
             {
