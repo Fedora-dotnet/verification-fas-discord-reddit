@@ -75,7 +75,6 @@ namespace VerificationWeb
                     x.CallbackPath = "/signin-reddit";
                     x.Scope.Add("identity");
                 });
-            // TODO remove hardcoded URI
             var webAgent = new BotWebAgent(Config.RedditBotName, Config.RedditBotPassword, Config.RedditBotId,
                 Config.RedditBotSecret, Config.RedirectUri);
             var reddit = new Reddit(webAgent, false);
