@@ -13,6 +13,7 @@ namespace VerificationWeb.Configuration
         public string RedditSecret { get; set; }
         public ulong GuildId { get; set; }
         public string Subreddit { get; set; }
+        public string RedirectUri { get; set; }
         public string RedditBotId { get; set; }
         public string RedditBotSecret { get; set; }
         public string RedditBotName { get; set; }
