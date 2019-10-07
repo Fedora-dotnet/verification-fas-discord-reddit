@@ -77,7 +77,7 @@ namespace VerificationWeb
                 });
             // TODO remove hardcoded URI
             var webAgent = new BotWebAgent(Config.RedditBotName, Config.RedditBotPassword, Config.RedditBotId,
-                Config.RedditBotSecret, "https://127.0.0.1:5001/");
+                Config.RedditBotSecret, Config.RedirectUri);
             var reddit = new Reddit(webAgent, false);
 
             services.AddSingleton(reddit);
