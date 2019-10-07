@@ -19,10 +19,10 @@ namespace VerificationWeb.Services
             _guild = client.Guilds.FirstOrDefault(x => x.Id == Config.GuildId);
         }
 
-        public async Task AssignRoleAsync(ulong userId, IEnumerable<string> roles)
+        public async Task AssignRoleAsync(ulong userId, IEnumerable<string> roleNames)
         {
             var rolesToAdd = new List<IRole>();
-                foreach (string roleName in roles)
+                foreach (string roleName in roleNames)
                 {
                     var roleId = Config.DiscordRoles[roleName];
                     rolesToAdd.Add(_guild.GetRole(roleId));
