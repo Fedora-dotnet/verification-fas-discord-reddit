@@ -68,18 +68,17 @@ namespace VerificationWeb
                 .AddReddit(x =>
                 {
                     x.CorrelationCookie.IsEssential = true;
-                    x.ClientId = Config.RedditId;
-                    x.ClientSecret = Config.RedditSecret;
+                    x.ClientId = Config.RedditVerificationId;
+                    x.ClientSecret = Config.RedditVerificationSecret;
                     x.ClaimActions.MapJsonKey("id", "id");
                     x.ClaimActions.MapJsonKey("name", "name");
                     x.CallbackPath = "/signin-reddit";
                     x.Scope.Add("identity");
                 });
-            var webAgent = new BotWebAgent(Config.RedditBotName, Config.RedditBotPassword, Config.RedditBotId,
+            var webAgent = new RefreshTokenWebAgent(Config.RedditBotRefreshToken, Config.RedditBotId,
                 Config.RedditBotSecret, Config.RedirectUri);
-            var reddit = new Reddit(webAgent, false);
-
-            services.AddSingleton(reddit);
+            
+            services.AddSingleton(webAgent);
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {

@@ -12,12 +12,12 @@ namespace VerificationWeb.Controllers
     public class RoleController : Controller
     {
         private readonly RoleService _roleService;
-        private readonly Reddit _redditService;
+        private readonly RefreshTokenWebAgent _redditWebAgent;
 
-        public RoleController(RoleService roleService, Reddit redditService)
+        public RoleController(RoleService roleService, RefreshTokenWebAgent redditWebAgent)
         {
             _roleService = roleService;
-            _redditService = redditService;
+            _redditWebAgent = redditWebAgent;
         }
 
         public async Task<IActionResult> Discord()
@@ -111,7 +111,8 @@ namespace VerificationWeb.Controllers
             }
 
             var username = HttpContext.Session.GetString("RedditUsername");
-            var subreddit = await _redditService.GetSubredditAsync(_roleService.Config.Subreddit);
+            var reddit = new Reddit(_redditWebAgent, true);
+            var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
             await subreddit.SetUserFlairAsync(username, "", flair);
             return Ok("Sucessfully added");
         }
