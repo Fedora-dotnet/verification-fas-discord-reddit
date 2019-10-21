@@ -113,7 +113,7 @@ namespace VerificationWeb.Controllers
             var username = HttpContext.Session.GetString("RedditUsername");
             var reddit = new Reddit(_redditWebAgent, true);
             var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
-            await subreddit.SetUserFlairAsync(username, "", flair);
+            await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
             return Ok("Sucessfully added");
         }
 
