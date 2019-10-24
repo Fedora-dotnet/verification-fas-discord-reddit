@@ -69,7 +69,7 @@ namespace VerificationWeb
                 {
                     x.CorrelationCookie.IsEssential = true;
                     x.ClientId = Config.RedditVerificationId;
-                    x.ClientSecret = Config.RedditVerificationId;
+                    x.ClientSecret = Config.RedditVerificationSecret;
                     x.ClaimActions.MapJsonKey("id", "id");
                     x.ClaimActions.MapJsonKey("name", "name");
                     x.CallbackPath = "/signin-reddit";
