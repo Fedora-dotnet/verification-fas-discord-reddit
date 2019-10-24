@@ -1,20 +1,27 @@
 @model UserModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Reddit flairs";
 }
 <div>
     @if (User.Identity.IsAuthenticated)
     {
-        <h2 class="text-center">Pick which one these flairs do you want:</h2>
-
-        <ul class="text-center">
-            @foreach (var x in (List<string>) ViewData["roles"])
-            {
-                <li class="text-center">
-                    <a href="/Role/GetRedditFlair?flair=@x">@x</a>
-                </li>
-            }
-        </ul>
+        <div style="width: 58%; margin: 0 auto;" class="row">
+            <h2>Click which one these <img src="/css/reddit.png" style="width: 40px" alt="discord logo"/> flairs do you want:</h2>
+        </div>
+        
+        <div><br></div>
+        
+        <div class="row">
+        <div class="col-sm-4"></div>
+            <div class="col-sm-4 text-center">
+                <div class="list-group">
+                    @foreach (var x in (List<string>) ViewData["roles"])
+                    {
+                        <a href="/Role/GetRedditFlair?flair=@x" class="rounded-pill list-group-item list-group-item-success list-group-item-action">@x</a>
+                    }
+                </div>
+            </div>
+            </div>
     }
 </div>
