@@ -9,15 +9,15 @@ namespace VerificationWeb.Configuration
         public string DiscordSecret { get; set; }
         public string FasId { get; set; }
         public string FasSecret { get; set; }
-        public string RedditId { get; set; }
-        public string RedditSecret { get; set; }
+        public string RedditVerificationId { get; set; }
+        public string RedditVerificationSecret { get; set; }
+        public string RedditBotId { get; set; }
+        public string RedditBotSecret { get; set; }
+        public string RedditBotRefreshToken { get; set; }
+        public string RedditBotAccessToken { get; set; }
         public ulong GuildId { get; set; }
         public string Subreddit { get; set; }
         public string RedirectUri { get; set; }
-        public string RedditBotId { get; set; }
-        public string RedditBotSecret { get; set; }
-        public string RedditBotName { get; set; }
-        public string RedditBotPassword { get; set; }
 
         public Dictionary<string, ulong> DiscordRoles { get; set; }
         public Dictionary<string, string> RolesConditions { get; set; }
