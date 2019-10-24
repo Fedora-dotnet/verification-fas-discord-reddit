@@ -2,18 +2,27 @@
 @model UserModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Discord roles";
 }
 
-<div class="text-center">
+<div>
     @if (User.Identity.IsAuthenticated)
     {
-        <h2>You've been given these <img src="/css/discord.png" style="width: 30px" alt="discord logo"/> roles:</h2>
-        <ul>
-            @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
-            {
-                <li>@x</li>
-            }
-        </ul>
-    }
-</div>
+         <div style="width: 44%; margin: 0 auto;" class="row">
+             <h2>You've been given these <img src="/css/discord.png" style="width: 40px" alt="discord logo"/> roles:</h2><br>
+             </div>
+                 
+                 <div><br></div>
+        <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4 text-center">
+        <div class="list-group"> 
+                    @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
+                    {
+                        <li class="rounded-pill list-group-item-success list-group-item">@x</li>
+                    }
+         </div>
+               </div>
+               </div>
+       }
+   </div>
