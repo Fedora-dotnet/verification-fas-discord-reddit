@@ -1,6 +1,6 @@
 ## Config
 
-Config is saved to the appsettings.json file in following way:
+Config is saved to the appsettings.json (or appsettings.Development.json) file in following way:
 
 (**Note**: Json doesn't support comments, so remove any text starting with // )
 ```
