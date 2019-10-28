@@ -3,25 +3,23 @@
 @{
     ViewData["Title"] = "Reddit flairs";
 }
-<div>
+<div class="container">
     @if (User.Identity.IsAuthenticated)
     {
-        <div style="width: 58%; margin: 0 auto;" class="row">
-            <h2>Click which one these <img src="/css/reddit.png" style="width: 40px" alt="discord logo"/> flairs do you want:</h2>
-        </div>
-        
-        <div><br></div>
-        
         <div class="row">
-        <div class="col-sm-4"></div>
-            <div class="col-sm-4 text-center">
-                <div class="list-group">
-                    @foreach (var x in (List<string>) ViewData["roles"])
-                    {
-                        <a href="/Role/GetRedditFlair?flair=@x" class="rounded-pill list-group-item list-group-item-success list-group-item-action">@x</a>
-                    }
-                </div>
-            </div>
-            </div>
+            <h1>Pick your <img src="/css/reddit.png" style="width: 40px" alt="discord logo"/> flair:</h1>
+        </div>
+        <div class="row">
+            <br/>
+        </div>
+        <div class="row">
+
+            <ul class="list-group col-lg">
+                @foreach (var x in (List<string>) ViewData["roles"])
+                {
+                    <a href="/Role/GetRedditFlair?flair=@x" class="list-group-item list-group-item-action text-center">@x</a>
+                }
+            </ul>
+        </div>
     }
 </div>

@@ -5,24 +5,23 @@
     ViewData["Title"] = "Discord roles";
 }
 
-<div>
+<div class="container">
     @if (User.Identity.IsAuthenticated)
     {
-         <div style="width: 44%; margin: 0 auto;" class="row">
-             <h2>You've been given these <img src="/css/discord.png" style="width: 40px" alt="discord logo"/> roles:</h2><br>
-             </div>
-                 
-                 <div><br></div>
         <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4 text-center">
-        <div class="list-group"> 
-                    @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
-                    {
-                        <li class="rounded-pill list-group-item-success list-group-item">@x</li>
-                    }
-         </div>
-               </div>
-               </div>
-       }
-   </div>
+            <h1>You've been given these <img src="/css/discord.png" style="width: 40px" alt="discord logo"/> roles:</h1><br>
+        </div>
+
+        <div class="row">
+            <br>
+        </div>
+        <div class="row text-center">
+            <ul class="list-group col-lg">
+                @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
+                {
+                    <li class="list-group-item">@x</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
