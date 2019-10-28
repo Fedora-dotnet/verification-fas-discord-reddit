@@ -4,12 +4,12 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+<div class = "text-center">
     @* <h1 class="display-4">Welcome</h1> *@
     @if (Model?.BaseLogintype != "Fedora")
     {
         <h1>
-            <a href="/auth/FedoraLogin" class="button">Login to FAS</a>
+            <a href="/auth/FedoraLogin" class="btn btn-lg btn-primary">Login to FAS</a>
         </h1>
     }
 
@@ -37,28 +37,5 @@
         @if (Model?.BaseLogintype == "Redhat")
         {
         }
-@* *@
-@*      <table> *@
-@*              <thead> *@
-@*              <tr> *@
-@*                  <th>Claim Type </th> *@
-@*                  <th>Claim Value</th> *@
-@*                  <th>Issuer</th> *@
-@*              </tr> *@
-@*              </thead> *@
-@*              <tbody> *@
-@*              @ViewData["Contributor"] *@
-@*              @ViewData["Groups"] *@
-@* *@
-@*              @foreach (var c in User.Identities.First().Claims) *@
-@*              { *@
-@*                  <tr> *@
-@*                      <td>@c.Type</td> *@
-@*                      <td>@c.Value</td> *@
-@*                      <td>@c.Issuer</td> *@
-@*                  </tr> *@
-@*              } *@
-@*              </tbody> *@
-@*          </table> *@
     }
 </div>

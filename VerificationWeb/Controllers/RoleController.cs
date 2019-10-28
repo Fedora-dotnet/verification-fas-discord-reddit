@@ -116,7 +116,7 @@ namespace VerificationWeb.Controllers
             var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
             await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
 
-            return Ok("Sucessfully added");
+            return View("Success");
         }
 
         public async Task AddDiscordRoles(IEnumerable<string> roles, ulong userId)
