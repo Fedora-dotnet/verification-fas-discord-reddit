@@ -105,18 +105,22 @@ namespace VerificationWeb.Controllers
 
         public async Task<IActionResult> GetRedditFlair(string flair)
         {
-            // validate the parameter from spoofing
-            if (!_roleService.Config.RedditFlairs.ContainsValue(flair))
+            if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Reddit"))
             {
-                return Unauthorized("Nice try");
+                // validate the parameter from spoofing
+                if (!_roleService.Config.RedditFlairs.ContainsValue(flair))
+                {
+                    return Unauthorized("Nice try");
+                }
+
+                var username = HttpContext.Session.GetString("RedditUsername");
+                var reddit = new Reddit(_redditWebAgent, true);
+                var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
+                await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
+
+                return View("Success");
             }
-
-            var username = HttpContext.Session.GetString("RedditUsername");
-            var reddit = new Reddit(_redditWebAgent, true);
-            var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
-            await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
-
-            return View("Success");
+            return Unauthorized("Nice try");
         }
 
         public async Task AddDiscordRoles(IEnumerable<string> roles, ulong userId)
