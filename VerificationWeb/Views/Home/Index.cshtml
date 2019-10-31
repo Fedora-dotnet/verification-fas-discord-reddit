@@ -4,7 +4,17 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class = "text-center">
+<style>
+    .brightness {
+        display: inline-block;
+    
+    }
+    .brightness img:hover {
+        opacity: .5;
+    }
+</style>
+
+<div class="text-center">
     @* <h1 class="display-4">Welcome</h1> *@
     @if (Model?.BaseLogintype != "Fedora")
     {
@@ -21,17 +31,22 @@
 @*              <p>I see you are member of all these groups: @Model.Groups<br></p> *@
 
             <h4>
-                Where do you want to get your roles?<br><font size="-0.2">(Click the icon)</font><br><br>
-                <b>
-                    <a href="/Auth/DiscordLogin" class="buttonlogo" style="margin-right: 50px">
-                        <img src="css/discord.png" style="width: 100px" alt="discord logo"/>
-                    </a>
-                </b>
-                <b>
-                    <a href="/Auth/RedditLogin" class="buttonlogo">
-                        <img src="css/reddit.png" style="width: 100px" alt="reddit logo"/>
-                    </a>
-                </b>
+                Where do you want to get your roles?<br><a style="font-size: small"> (Click the icon)</a><br><br>
+                <div class="brightness">
+                    <b>
+                        <a href="/Auth/DiscordLogin" class="" style="margin-right: 50px">
+                            <img src="css/discord.png" style="width: 100px" alt="discord logo"/>
+                        </a>
+                    </b>
+                </div>
+                <div class="brightness">
+
+                    <b>
+                        <a href="/Auth/RedditLogin" class="">
+                            <img src="css/reddit.png" style="width: 100px" alt="reddit logo"/>
+                        </a>
+                    </b>
+                </div>
             </h4>
         }
         @if (Model?.BaseLogintype == "Redhat")

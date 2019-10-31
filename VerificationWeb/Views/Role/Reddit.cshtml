@@ -17,7 +17,7 @@
             <ul class="list-group col-lg">
                 @foreach (var x in (List<string>) ViewData["roles"])
                 {
-                    <a href="/Role/GetRedditFlair?flair=@x" class="list-group-item list-group-item-action text-center">@x</a>
+                    <a href="/Role/GetRedditFlair?flair=@x" class="font-weight-bolder list-group-item list-group-item-action text-center">@x</a>
                 }
             </ul>
         </div>
