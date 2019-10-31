@@ -47,11 +47,11 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3 justify-content-around">
         <div class="col-6">
-            <a style="font-size: x-large" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/css/fedora.png" width="35px" alt="fedora logo"/> FAS Authentication</a>
+            <a style="font-size: x-large" class="nav-item nav-link navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img style="float:left; padding-right: 3px" src="/css/fedora.png" width="35px"  alt="fedora logo"/> Verification web</a>
         </div>
-        <div class="navbar-brand col-6" style="text-align: right; font-size: x-large ;position: relative; top: 8px">
+        <div class="nav-item col-6" style="text-align: right; font-size: x-large ;position: relative; top: 8px">
             @* Adds user nickname to the top right corner after authentication *@
             @if (User.Identity.IsAuthenticated)
             {
@@ -73,7 +73,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2019 - FAS Authentication
+        &copy; 2019 - Verification web
     </div>
 </footer>
 
