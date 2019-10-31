@@ -41,7 +41,7 @@ namespace VerificationWeb
                 {
                     options.LoginPath = "/api/unauthorized";
                     //options.LogoutPath = "/logout";
-                    options.ExpireTimeSpan = new TimeSpan(7, 0, 0, 0);
+                    options.ExpireTimeSpan = new TimeSpan(0, 0, 10, 00);
                 })
                 .AddOpenIdConnect(o =>
                 {
