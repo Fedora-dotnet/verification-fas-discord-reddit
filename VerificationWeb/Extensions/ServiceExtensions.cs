@@ -12,7 +12,7 @@ namespace VerificationWeb.EXtensions
         {
             services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig()
             {
-                LogLevel = LogSeverity.Debug
+                LogLevel = LogSeverity.Warning
             }));
 
             services.AddSingleton(new CommandService(new CommandServiceConfig()
