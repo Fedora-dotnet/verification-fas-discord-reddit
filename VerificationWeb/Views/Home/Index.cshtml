@@ -18,8 +18,11 @@
     @* <h1 class="display-4">Welcome</h1> *@
     @if (Model?.BaseLogintype != "Fedora")
     {
+        <h4>
+            In order to verify as contributor please log in below<br>
+        </h4>
         <h1>
-            <a href="/auth/FedoraLogin" class="btn btn-lg btn-primary">Login to FAS</a>
+            <a href="/auth/FedoraLogin" class="btn btn-lg btn-primary">FAS Login</a>
         </h1>
     }
 
@@ -35,7 +38,7 @@
                 <div class="brightness">
                     <b>
                         <a href="/Auth/DiscordLogin" class="" style="margin-right: 50px">
-                            <img src="css/discord.png" style="width: 100px" alt="discord logo"/>
+                            <img src="~/images/discord.png" style="width: 100px" alt="discord logo"/>
                         </a>
                     </b>
                 </div>
@@ -43,7 +46,7 @@
 
                     <b>
                         <a href="/Auth/RedditLogin" class="">
-                            <img src="css/reddit.png" style="width: 100px" alt="reddit logo"/>
+                            <img src="~/images/reddit.png" style="width: 100px" alt="reddit logo"/>
                         </a>
                     </b>
                 </div>
