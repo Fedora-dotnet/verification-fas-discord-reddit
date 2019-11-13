@@ -45,7 +45,7 @@ namespace VerificationWeb
                     //options.LogoutPath = "/logout";
                     options.ExpireTimeSpan = new TimeSpan(0, 0, 10, 00);
                 })
-                .AddOpenIdConnect(o =>
+                .AddOpenIdConnect("Fedora" ,o =>
                 {
                     o.ClientId = Config.FasId;
                     o.ClientSecret = Config.FasSecret;
@@ -60,18 +60,17 @@ namespace VerificationWeb
                     o.CorrelationCookie.IsEssential = true;
                     o.GetClaimsFromUserInfoEndpoint = true;
                 })
-//                .AddOpenIdConnect(o =>
-//                {
-//                    o.defa
-//                    o.ClientId = " ";
-//                    o.ClientSecret = " ";
-//                    o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/protocol/openid-connect";
-//                    o.ClaimActions.MapJsonKey("given_name", "nickname");
-//                    o.CallbackPath = "/signin-redhat";
-//                    o.ResponseType = OpenIdConnectResponseType.Code;
-//                    o.CorrelationCookie.IsEssential = true;
-//                    o.GetClaimsFromUserInfoEndpoint = true;
-//                })
+                .AddOpenIdConnect("RedHat",o =>
+                {
+                    o.ClientId = " ";
+                    o.ClientSecret = " ";
+                    o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/protocol/openid-connect";
+                    o.ClaimActions.MapJsonKey("given_name", "nickname");
+                    o.CallbackPath = "/signin-redhat";
+                    o.ResponseType = OpenIdConnectResponseType.Code;
+                    o.CorrelationCookie.IsEssential = true;
+                    o.GetClaimsFromUserInfoEndpoint = true;
+                })
 //                .AddDiscord(x =>
 //                {
 //                    x.AppId = Config.DiscordId;

@@ -36,7 +36,7 @@ namespace VerificationWeb.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 // maybe unhardcode this?
-                if (User.HasClaim(x => x.Issuer == "OpenIdConnect"))
+                if (User.HasClaim(x => x.Issuer == "Fedora"))
                 {
                     string groups = "";
                     if (User.HasClaim(x => x.Type == "cla" && x.Value.Contains("done")))
@@ -61,7 +61,7 @@ namespace VerificationWeb.Controllers
         public IActionResult FedoraLogin()
         {
             return Challenge(new AuthenticationProperties {RedirectUri = "/auth"},
-                OpenIdConnectDefaults.AuthenticationScheme);
+                "Fedora");
         }
     }
 }
