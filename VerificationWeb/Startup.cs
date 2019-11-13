@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AspNet.Security.OAuth.Discord;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -59,12 +60,33 @@ namespace VerificationWeb
                     o.CorrelationCookie.IsEssential = true;
                     o.GetClaimsFromUserInfoEndpoint = true;
                 })
-                .AddDiscord(x =>
+//                .AddOpenIdConnect(o =>
+//                {
+//                    o.defa
+//                    o.ClientId = " ";
+//                    o.ClientSecret = " ";
+//                    o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/protocol/openid-connect";
+//                    o.ClaimActions.MapJsonKey("given_name", "nickname");
+//                    o.CallbackPath = "/signin-redhat";
+//                    o.ResponseType = OpenIdConnectResponseType.Code;
+//                    o.CorrelationCookie.IsEssential = true;
+//                    o.GetClaimsFromUserInfoEndpoint = true;
+//                })
+//                .AddDiscord(x =>
+//                {
+//                    x.AppId = Config.DiscordId;
+//                    x.AppSecret = Config.DiscordSecret;
+//                    x.CorrelationCookie.IsEssential = true;
+//                    x.ClaimActions.MapAll();
+//                })
+//                .a
+                .AddDiscord(o =>
                 {
-                    x.AppId = Config.DiscordId;
-                    x.AppSecret = Config.DiscordSecret;
-                    x.CorrelationCookie.IsEssential = true;
-                    x.ClaimActions.MapAll();
+                    o.ClientId = Config.DiscordId;
+                    o.ClientSecret = Config.DiscordSecret;
+                    o.CorrelationCookie.IsEssential = true;
+                    o.ClaimActions.MapAll();
+                    o.CallbackPath = "/signin-discord";
                 })
                 .AddReddit(x =>
                 {

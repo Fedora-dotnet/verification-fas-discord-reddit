@@ -7,49 +7,49 @@
 
 
     <ItemGroup>
-        <PackageReference Include="AspNet.Security.OAuth.Reddit" Version="2.1.0"/>
-        <PackageReference Include="Discord.Net" Version="2.1.1"/>
-        <PackageReference Include="Discord.OAuth2" Version="2.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.2"/>
-        <PackageReference Include="RedditSharp" Version="2.0.0-CI00075"/>
+        <PackageReference Include="AspNet.Security.OAuth.Discord" Version="2.2.0" />
+        <PackageReference Include="AspNet.Security.OAuth.Reddit" Version="2.2.0" />
+        <PackageReference Include="Discord.Net" Version="2.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="RedditSharp" Version="2.0.0-CI00075" />
     </ItemGroup>
 
 
     <ItemGroup>
-        <_ResolveComReferenceCache Remove="obj\Debug\netcoreapp2.2\WebApplication1.csproj.ResolveComReference.cache"/>
+        <_ResolveComReferenceCache Remove="obj\Debug\netcoreapp2.2\WebApplication1.csproj.ResolveComReference.cache" />
     </ItemGroup>
 
 
     <ItemGroup>
-        <IntermediateAssembly Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll"/>
+        <IntermediateAssembly Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll" />
     </ItemGroup>
 
 
     <ItemGroup>
-        <_DebugSymbolsIntermediatePath Remove="obj\Debug\netcoreapp2.2\WebApplication1.pdb"/>
+        <_DebugSymbolsIntermediatePath Remove="obj\Debug\netcoreapp2.2\WebApplication1.pdb" />
     </ItemGroup>
 
 
     <ItemGroup>
-        <_DeploymentManifestEntryPoint Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll"/>
+        <_DeploymentManifestEntryPoint Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll" />
     </ItemGroup>
 
 
     <ItemGroup>
-        <ApplicationManifest Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll.manifest"/>
+        <ApplicationManifest Remove="obj\Debug\netcoreapp2.2\WebApplication1.dll.manifest" />
     </ItemGroup>
 
 
     <ItemGroup>
-        <DeployManifest Remove="obj\Debug\netcoreapp2.2\WebApplication1.application"/>
+        <DeployManifest Remove="obj\Debug\netcoreapp2.2\WebApplication1.application" />
     </ItemGroup>
 
 </Project>
