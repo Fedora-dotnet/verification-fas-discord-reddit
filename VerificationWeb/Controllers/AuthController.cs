@@ -1,6 +1,6 @@
 using System.Linq;
+using AspNet.Security.OAuth.Discord;
 using AspNet.Security.OAuth.Reddit;
-using Discord.OAuth2;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +21,7 @@ namespace VerificationWeb.Controllers
         public IActionResult DiscordLogin()
         {
             return Challenge(
-                new AuthenticationProperties {RedirectUri = "/Role/Discord"}, DiscordDefaults.AuthenticationScheme);
+                new AuthenticationProperties {RedirectUri = "/Role/Discord"}, DiscordAuthenticationDefaults.AuthenticationScheme);
         }
 
         public IActionResult RedditLogin()
