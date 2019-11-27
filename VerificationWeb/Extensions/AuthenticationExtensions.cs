@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -73,7 +74,10 @@ namespace VerificationWeb.EXtensions
                 o.ResponseType = OpenIdConnectResponseType.Code;
                 o.CorrelationCookie.IsEssential = true;
                 o.GetClaimsFromUserInfoEndpoint = true;
-                o.ClaimActions.MapAll();
+                o.ClaimActions.MapJsonKey(ClaimTypes.Name, "fullname");
+                o.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                o.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+                o.ClaimActions.MapJsonKey("preferred_username", "username");
                 o.TokenValidationParameters = new TokenValidationParameters {
                     RequireExpirationTime = true,
                     RequireSignedTokens = true,

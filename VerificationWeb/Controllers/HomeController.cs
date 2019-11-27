@@ -5,21 +5,34 @@ using VerificationWeb.Models;
 
 namespace VerificationWeb.Controllers
 {
-//    [Authorize(AuthenticationSchemes = OpenIdConnectDefaults.AuthenticationScheme)]
     public class HomeController : Controller
     {
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
-                var userModel = new UserModel
+                // TODO
+                if (HttpContext.Session.GetString("login_type") == "Redhat")
                 {
-                    Groups = HttpContext.Session.GetString("Groups"),
-                    BaseLogintype = HttpContext.Session.GetString("BaseLoginType"),
-                    FasNickname = HttpContext.Session.GetString("FasNickname"),
-                    RedhatNickname = HttpContext.Session.GetString("RedhatNickname")
-                };
-                return View(userModel);
+                    var userModel = new UserModel
+                    {
+                        Groups = HttpContext.Session.GetString("Groups"),
+                        BaseLogintype = HttpContext.Session.GetString("BaseLoginType"),
+                        FasNickname = HttpContext.Session.GetString("FasNickname"),
+                        RedhatNickname = HttpContext.Session.GetString("RedhatNickname")
+                    };
+                }
+                if(HttpContext.Session.GetString("login_type") == "Fedora")
+                {
+                    var userModel = new UserModel
+                    {
+                        Groups = HttpContext.Session.GetString("Groups"),
+                        BaseLogintype = HttpContext.Session.GetString("BaseLoginType"),
+                        FasNickname = HttpContext.Session.GetString("FasNickname"),
+                        RedhatNickname = HttpContext.Session.GetString("RedhatNickname")
+                    };
+                    return View(userModel);
+                }
             }
 
             return View();
