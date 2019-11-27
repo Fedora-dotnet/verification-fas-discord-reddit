@@ -11,7 +11,7 @@ namespace VerificationWeb.EXtensions
     internal static class AuthenticationExtensions
     {
         
-        public static AuthenticationBuilder AddFedoraAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret, string configUri)
+        public static AuthenticationBuilder AddFedoraAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret, OpenIdConnectConfiguration config)
         {
             builder.AddOpenIdConnect(authScheme, o =>
             {

@@ -33,12 +33,19 @@ namespace VerificationWeb
         public void ConfigureServices(IServiceCollection services)
         {
             IdentityModelEventSource.ShowPII = true;
-            var issuer = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/.well-known/openid-configuration";
-            var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-                issuer,
+            var redhatIssuer = Config.RedhatOidcDiscoveryUri;
+            var redhatConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+                redhatIssuer,
                 new OpenIdConnectConfigurationRetriever(),
                 new HttpDocumentRetriever());
-            var discoveryDocument =  configurationManager.GetConfigurationAsync(CancellationToken.None).Result;
+            var redhatDiscoveryDocument =  redhatConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
+            
+            var fedoraIssuer = Config.FedoraOidcDiscoveryUri;
+            var fedoraConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+                fedoraIssuer,
+                new OpenIdConnectConfigurationRetriever(),
+                new HttpDocumentRetriever());
+            var fedoraDiscoveryDocument =  fedoraConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -54,32 +61,32 @@ namespace VerificationWeb
                     //options.LogoutPath = "/logout";
                     options.ExpireTimeSpan = new TimeSpan(0, 0, 10, 00);
                 })
-//                .AddOpenIdConnect("Fedora" ,o =>
-//                {
-//                    o.ClientId = Config.FasId;
-//                    o.ClientSecret = Config.FasSecret;
-//                    o.Authority = "https://iddev.fedorainfracloud.org";
-//                    o.Scope.Add("https://id.fedoraproject.org/scope/groups");
-//                    o.Scope.Add("https://id.fedoraproject.org/scope/cla");
-//                    o.ClaimActions.MapJsonKey("cla", "cla");
-//                    o.ClaimActions.MapJsonKey("nickname", "nickname");
-//                    o.ClaimActions.MapJsonKey("groups", "groups");
-//                    o.CallbackPath = "/signin-oidc";
-//                    o.ResponseType = OpenIdConnectResponseType.Code;
-//                    o.CorrelationCookie.IsEssential = true;
-//                    o.GetClaimsFromUserInfoEndpoint = true;
-//                })
-//                .AddOpenIdConnect("RedHat",o =>
-//                {
-//                    o.ClientId = " ";
-//                    o.ClientSecret = " ";
-//                    o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/protocol/openid-connect";
-//                    o.ClaimActions.MapJsonKey("given_name", "nickname");
-//                    o.CallbackPath = "/signin-redhat";
-//                    o.ResponseType = OpenIdConnectResponseType.Code;
-//                    o.CorrelationCookie.IsEssential = true;
-//                    o.GetClaimsFromUserInfoEndpoint = true;
-//                })
+                .AddOpenIdConnect("Fedora" ,o =>
+                {
+                    o.ClientId = Config.FasId;
+                    o.ClientSecret = Config.FasSecret;
+                    o.Authority = "https://iddev.fedorainfracloud.org";
+                    o.Scope.Add("https://id.fedoraproject.org/scope/groups");
+                    o.Scope.Add("https://id.fedoraproject.org/scope/cla");
+                    o.ClaimActions.MapJsonKey("cla", "cla");
+                    o.ClaimActions.MapJsonKey("nickname", "nickname");
+                    o.ClaimActions.MapJsonKey("groups", "groups");
+                    o.CallbackPath = "/signin-oidc";
+                    o.ResponseType = OpenIdConnectResponseType.Code;
+                    o.CorrelationCookie.IsEssential = true;
+                    o.GetClaimsFromUserInfoEndpoint = true;
+                })
+                .AddOpenIdConnect("Redhat",o =>
+                {
+                    o.ClientId = Config.RedhatClientId;
+                    o.ClientSecret = Config.RedhatClientId;
+                    o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/protocol/openid-connect";
+                    o.ClaimActions.MapJsonKey("given_name", "nickname");
+                    o.CallbackPath = "/signin-redhat";
+                    o.ResponseType = OpenIdConnectResponseType.Code;
+                    o.CorrelationCookie.IsEssential = true;
+                    o.GetClaimsFromUserInfoEndpoint = true;
+                })
                 .AddDiscord(o =>
                 {
                     o.ClientId = Config.DiscordId;
@@ -97,9 +104,9 @@ namespace VerificationWeb
                     x.ClaimActions.MapJsonKey("name", "name");
                     x.CallbackPath = "/signin-reddit";
                     x.Scope.Add("identity");
-                })
-                .AddFedoraAuthentication("Fedora", Config.FasId, Config.FasSecret, Config.FedoraOidcDiscoveryUri)
-                .AddRedhatAuthentication("Redhat", Config.RedhatClientId, Config.RedhatClientSecret, discoveryDocument);
+                });
+//                .AddFedoraAuthentication("Fedora", Config.FasId, Config.FasSecret, fedoraDiscoveryDocument)
+//                .AddRedhatAuthentication("Redhat", Config.RedhatClientId, Config.RedhatClientSecret, redhatDiscoveryDocument);
             
             var webAgent = new RefreshTokenWebAgent(Config.RedditBotRefreshToken, Config.RedditBotId, Config.RedditBotSecret, Config.RedirectUri);
 
