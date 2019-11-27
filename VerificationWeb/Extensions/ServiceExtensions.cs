@@ -4,24 +4,40 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using VerificationWeb.Services;
 
+
 namespace VerificationWeb.EXtensions
 {
     internal static class ServiceExtensions
     {
-        public static IServiceCollection AddDiscordBot(this IServiceCollection services)
+        /// <summary>
+        /// Adds DiscordSocketClient and CommandService as singletons into the services and sets them up
+        /// Then adds the DiscordBot as a hosted service
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="discordSocketConfig"></param>
+        /// <param name="commandServiceConfig"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDiscordBot(this IServiceCollection services,
+            DiscordSocketConfig discordSocketConfig = null, CommandServiceConfig commandServiceConfig = null)
         {
-            services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig()
+            if (discordSocketConfig == null)
             {
-                LogLevel = LogSeverity.Warning
-            }));
+                services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig()
+                {
+                    LogLevel = LogSeverity.Warning
+                }));
+            }
 
-            services.AddSingleton(new CommandService(new CommandServiceConfig()
+            if (commandServiceConfig == null)
             {
-                LogLevel = LogSeverity.Debug,
-                DefaultRunMode = RunMode.Sync,
-                CaseSensitiveCommands = false,
-                SeparatorChar = ' '
-            }));
+                services.AddSingleton(new CommandService(new CommandServiceConfig()
+                {
+                    LogLevel = LogSeverity.Warning,
+                    DefaultRunMode = RunMode.Sync,
+                    CaseSensitiveCommands = false,
+                    SeparatorChar = ' '
+                }));
+            }
 
             services.AddSingleton<RoleService>();
             services.AddHostedService<DiscordBot>();
