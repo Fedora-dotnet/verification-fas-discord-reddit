@@ -53,6 +53,13 @@ namespace VerificationWeb.Controllers
                     HttpContext.Session.SetString("BaseLoginType", "Fedora");
                     return RedirectToAction("Index", "Home");
                 }
+
+                if (User.HasClaim(x => x.Issuer == "Redhat"))
+                {
+                    HttpContext.Session.SetString("username", User.Claims.FirstOrDefault(x => x.Type == "username")?.Value);
+                    HttpContext.Session.SetString("login_type", "Redhat");
+                }
+
             }
 
             return Unauthorized();
