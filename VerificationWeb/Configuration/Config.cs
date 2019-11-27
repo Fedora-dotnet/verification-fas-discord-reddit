@@ -9,8 +9,8 @@ namespace VerificationWeb.Configuration
         public string DiscordSecret { get; set; }
         public string FasId { get; set; }
         public string FasSecret { get; set; }
-        public string RedditVerificationId { get; set; }
-        public string RedditVerificationSecret { get; set; }
+        public string RedditAuthId { get; set; }
+        public string RedditAuthSecret { get; set; }
         public string RedditBotId { get; set; }
         public string RedditBotSecret { get; set; }
         public string RedditBotRefreshToken { get; set; }

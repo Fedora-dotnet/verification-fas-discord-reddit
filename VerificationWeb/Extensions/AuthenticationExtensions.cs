@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,7 @@ namespace VerificationWeb.EXtensions
     internal static class AuthenticationExtensions
     {
         
-        public static AuthenticationBuilder AddFedoraAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret, OpenIdConnectConfiguration config)
+        public static AuthenticationBuilder AddFedoraAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret)
         {
             builder.AddOpenIdConnect(authScheme, o =>
             {
@@ -31,25 +32,43 @@ namespace VerificationWeb.EXtensions
             return builder;
         }
 
-        public static AuthenticationBuilder AddDiscordAuthentication(this AuthenticationBuilder builder)
+        public static AuthenticationBuilder AddDiscordAuthentication(this AuthenticationBuilder builder, string clientId, string clientSecret)
         {
-            return builder;
-        }
-
-        public static AuthenticationBuilder AddRedditAuthentication(this AuthenticationBuilder builder)
-        {
-            return builder;
-        }
-
-        public static AuthenticationBuilder AddRedhatAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret, OpenIdConnectConfiguration config)
-        {
-                      
-            builder.AddOpenIdConnect(authScheme, o =>
+            return builder.AddDiscord(o =>
             {
                 o.ClientId = clientId;
                 o.ClientSecret = clientSecret;
-                o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/protocol/openid-connect";
-//                o.ClaimActions.MapJsonKey("given_name", "nickname");
+                o.CorrelationCookie.IsEssential = true;
+                o.ClaimActions.MapAll();
+                o.CallbackPath = "/signin-discord";
+            });
+        }
+
+        public static AuthenticationBuilder AddRedditAuthentication(this AuthenticationBuilder builder, string clientId, string clientSecret)
+        {
+            return builder.AddReddit(x =>
+            {
+                x.CorrelationCookie.IsEssential = true;
+                x.ClientId = clientId;
+                x.ClientSecret = clientSecret;
+                x.ClaimActions.MapJsonKey("id", "id");
+                x.ClaimActions.MapJsonKey("name", "name");
+                x.CallbackPath = "/signin-reddit";
+                x.Scope.Add("identity");
+            });
+        }
+
+        public static AuthenticationBuilder AddRedhatAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret, string configUri)
+        {
+                      
+            return builder.AddOpenIdConnect(authScheme, o =>
+            {
+                o.ClientId = clientId;
+                o.ClientSecret = clientSecret;
+                o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP";
+                o.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(configUri,new OpenIdConnectConfigurationRetriever(),
+                    new HttpDocumentRetriever());
+                o.Configuration = o.ConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
                 o.CallbackPath = "/signin-redhat";
                 o.ResponseType = OpenIdConnectResponseType.Code;
                 o.CorrelationCookie.IsEssential = true;
@@ -58,14 +77,13 @@ namespace VerificationWeb.EXtensions
                     RequireExpirationTime = true,
                     RequireSignedTokens = true,
                     ValidateIssuer = true,
-                    ValidIssuer = config.Issuer,
+                    ValidIssuer = o.Configuration.Issuer,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKeys = config.SigningKeys,
+                    IssuerSigningKeys = o.Configuration.SigningKeys,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromMinutes(2)
                 };
             });
-            return builder;
         }
     }
 }
