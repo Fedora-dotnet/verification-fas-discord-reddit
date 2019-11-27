@@ -63,5 +63,10 @@ namespace VerificationWeb.Controllers
             return Challenge(new AuthenticationProperties {RedirectUri = "/auth"},
                 "Fedora");
         }
+        public IActionResult RedhatLogin()
+        {
+            return Challenge(new AuthenticationProperties {RedirectUri = "/auth"},
+                "Redhat");
+        }
     }
 }

@@ -14,13 +14,16 @@ namespace VerificationWeb.Configuration
         public string RedditBotId { get; set; }
         public string RedditBotSecret { get; set; }
         public string RedditBotRefreshToken { get; set; }
-        public string RedditBotAccessToken { get; set; }
+        public string RedhatClientId { get; set; }
+        public string RedhatClientSecret { get; set; }
         public ulong GuildId { get; set; }
         public string Subreddit { get; set; }
         public string RedirectUri { get; set; }
-
         public Dictionary<string, ulong> DiscordRoles { get; set; }
         public Dictionary<string, string> RolesConditions { get; set; }
         public Dictionary<string, string> RedditFlairs { get; set; }
+        
+        public string RedhatOidcDiscoveryUri { get; set; }
+        public string FedoraOidcDiscoveryUri { get; set; }
     }
 }
