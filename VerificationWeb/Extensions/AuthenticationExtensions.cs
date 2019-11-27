@@ -73,6 +73,7 @@ namespace VerificationWeb.EXtensions
                 o.ResponseType = OpenIdConnectResponseType.Code;
                 o.CorrelationCookie.IsEssential = true;
                 o.GetClaimsFromUserInfoEndpoint = true;
+                o.ClaimActions.MapAll();
                 o.TokenValidationParameters = new TokenValidationParameters {
                     RequireExpirationTime = true,
                     RequireSignedTokens = true,
