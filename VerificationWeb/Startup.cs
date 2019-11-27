@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -33,19 +34,6 @@ namespace VerificationWeb
         public void ConfigureServices(IServiceCollection services)
         {
             IdentityModelEventSource.ShowPII = true;
-            var redhatIssuer = Config.RedhatOidcDiscoveryUri;
-            var redhatConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-                redhatIssuer,
-                new OpenIdConnectConfigurationRetriever(),
-                new HttpDocumentRetriever());
-            var redhatDiscoveryDocument =  redhatConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
-            
-            var fedoraIssuer = Config.FedoraOidcDiscoveryUri;
-            var fedoraConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-                fedoraIssuer,
-                new OpenIdConnectConfigurationRetriever(),
-                new HttpDocumentRetriever());
-            var fedoraDiscoveryDocument =  fedoraConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -57,56 +45,12 @@ namespace VerificationWeb
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/api/unauthorized";
-                    //options.LogoutPath = "/logout";
                     options.ExpireTimeSpan = new TimeSpan(0, 0, 10, 00);
                 })
-                .AddOpenIdConnect("Fedora" ,o =>
-                {
-                    o.ClientId = Config.FasId;
-                    o.ClientSecret = Config.FasSecret;
-                    o.Authority = "https://iddev.fedorainfracloud.org";
-                    o.Scope.Add("https://id.fedoraproject.org/scope/groups");
-                    o.Scope.Add("https://id.fedoraproject.org/scope/cla");
-                    o.ClaimActions.MapJsonKey("cla", "cla");
-                    o.ClaimActions.MapJsonKey("nickname", "nickname");
-                    o.ClaimActions.MapJsonKey("groups", "groups");
-                    o.CallbackPath = "/signin-oidc";
-                    o.ResponseType = OpenIdConnectResponseType.Code;
-                    o.CorrelationCookie.IsEssential = true;
-                    o.GetClaimsFromUserInfoEndpoint = true;
-                })
-                .AddOpenIdConnect("Redhat",o =>
-                {
-                    o.ClientId = Config.RedhatClientId;
-                    o.ClientSecret = Config.RedhatClientId;
-                    o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP/protocol/openid-connect";
-                    o.ClaimActions.MapJsonKey("given_name", "nickname");
-                    o.CallbackPath = "/signin-redhat";
-                    o.ResponseType = OpenIdConnectResponseType.Code;
-                    o.CorrelationCookie.IsEssential = true;
-                    o.GetClaimsFromUserInfoEndpoint = true;
-                })
-                .AddDiscord(o =>
-                {
-                    o.ClientId = Config.DiscordId;
-                    o.ClientSecret = Config.DiscordSecret;
-                    o.CorrelationCookie.IsEssential = true;
-                    o.ClaimActions.MapAll();
-                    o.CallbackPath = "/signin-discord";
-                })
-                .AddReddit(x =>
-                {
-                    x.CorrelationCookie.IsEssential = true;
-                    x.ClientId = Config.RedditVerificationId;
-                    x.ClientSecret = Config.RedditVerificationSecret;
-                    x.ClaimActions.MapJsonKey("id", "id");
-                    x.ClaimActions.MapJsonKey("name", "name");
-                    x.CallbackPath = "/signin-reddit";
-                    x.Scope.Add("identity");
-                });
-//                .AddFedoraAuthentication("Fedora", Config.FasId, Config.FasSecret, fedoraDiscoveryDocument)
-//                .AddRedhatAuthentication("Redhat", Config.RedhatClientId, Config.RedhatClientSecret, redhatDiscoveryDocument);
+                .AddDiscordAuthentication(Config.DiscordId, Config.DiscordSecret)
+                .AddRedditAuthentication(Config.RedditAuthId, Config.RedditAuthSecret)
+                .AddFedoraAuthentication("Fedora", Config.FasId, Config.FasSecret)
+                .AddRedhatAuthentication("Redhat", Config.RedhatClientId, Config.RedhatClientSecret, Config.RedhatOidcDiscoveryUri);
             
             var webAgent = new RefreshTokenWebAgent(Config.RedditBotRefreshToken, Config.RedditBotId, Config.RedditBotSecret, Config.RedirectUri);
 
