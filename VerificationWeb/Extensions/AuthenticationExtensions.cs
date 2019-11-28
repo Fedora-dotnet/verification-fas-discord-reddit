@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using VerificationWeb.Models;
 
 namespace VerificationWeb.EXtensions
 {
@@ -22,10 +23,10 @@ namespace VerificationWeb.EXtensions
                 o.Authority = "https://iddev.fedorainfracloud.org";
                 o.Scope.Add("https://id.fedoraproject.org/scope/groups");
                 o.Scope.Add("https://id.fedoraproject.org/scope/cla");
-                o.ClaimActions.MapJsonKey("cla", "cla");
-                o.ClaimActions.MapJsonKey("nickname", "nickname");
-                o.ClaimActions.MapJsonKey("groups", "groups");
-                o.CallbackPath = "/signin-oidc";
+                o.ClaimActions.MapJsonKey(SessionClaims.Cla, SessionClaims.Cla);
+                o.ClaimActions.MapJsonKey(SessionClaims.Username, "nickname");
+                o.ClaimActions.MapJsonKey(SessionClaims.Groups, SessionClaims.Groups);
+                o.CallbackPath = "/signin-fedora";
                 o.ResponseType = OpenIdConnectResponseType.Code;
                 o.CorrelationCookie.IsEssential = true;
                 o.GetClaimsFromUserInfoEndpoint = true;
@@ -74,10 +75,7 @@ namespace VerificationWeb.EXtensions
                 o.ResponseType = OpenIdConnectResponseType.Code;
                 o.CorrelationCookie.IsEssential = true;
                 o.GetClaimsFromUserInfoEndpoint = true;
-                o.ClaimActions.MapJsonKey(ClaimTypes.Name, "fullname");
-                o.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
-                o.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
-                o.ClaimActions.MapJsonKey("preferred_username", "username");
+                o.ClaimActions.MapJsonKey(SessionClaims.Username ,"preferred_username");
                 o.TokenValidationParameters = new TokenValidationParameters {
                     RequireExpirationTime = true,
                     RequireSignedTokens = true,
