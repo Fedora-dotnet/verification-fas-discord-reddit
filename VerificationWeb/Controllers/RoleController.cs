@@ -59,9 +59,13 @@ namespace VerificationWeb.Controllers
                     ViewData.Add("AddedRoles", rolesName);
                     return View("Discord");
                 }
-                else if (loginType == SessionClaims.FedoraScheme)
+
+                if (loginType == SessionClaims.RedhatScheme)
                 {
-                    
+                    var rolesName = new List<string> {"Redhat"};
+                    await AddDiscordRoles(rolesName, Convert.ToUInt64(userId));
+                    ViewData.Add("AddedRoles", rolesName);
+                    return View("Discord");
                 }
             }
 
@@ -74,11 +78,11 @@ namespace VerificationWeb.Controllers
             if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Reddit"))
             {
                 string redditName = User.Claims.FirstOrDefault(x => x.Type == "name")?.Value;
-                HttpContext.Session.SetString("RedditUsername", redditName);
+                HttpContext.Session.SetString(SessionClaims.RedditUsername, redditName);
 
-                var loginType = HttpContext.Session.GetString("BaseLoginType");
+                var loginType = HttpContext.Session.GetString(SessionClaims.LoginType);
 
-                if (loginType == "Fedora")
+                if (loginType == SessionClaims.FedoraScheme)
                 {
                     GetFedoraClaims(out string name, out string groups);
 
@@ -99,11 +103,15 @@ namespace VerificationWeb.Controllers
                     ViewData.Add("roles", rolesName);
                     return View("Reddit");
                 }
-                else if (loginType == "RedHat")
+                
+                if (loginType == SessionClaims.RedhatScheme)
                 {
+                    var rolesName = new List<string>();
+                    rolesName.Add(_roleService.Config.RedditFlairs["Redhat"]);
+                    ViewData.Add("roles", rolesName);
+                    return View("Reddit");
                 }
             }
-
             return Unauthorized();
         }
 
@@ -117,7 +125,7 @@ namespace VerificationWeb.Controllers
                     return Unauthorized("Nice try");
                 }
 
-                var username = HttpContext.Session.GetString("RedditUsername");
+                var username = HttpContext.Session.GetString(SessionClaims.RedditUsername);
                 var reddit = new Reddit(_redditWebAgent, true);
                 var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
                 await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
@@ -130,16 +138,16 @@ namespace VerificationWeb.Controllers
         public async Task AddDiscordRoles(IEnumerable<string> roles, ulong userId)
         {
             // TODO Hide it from url access 
-            await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), roles);
+            await _roleService.AssignRoleAsync(userId, roles);
         }
 
-        public void SaveDiscordClaims(string name, string id)
+        private void SaveDiscordClaims(string name, string id)
         {
-            HttpContext.Session.SetString("DiscordUsername", name);
-            HttpContext.Session.SetString("DiscordId", id);
+            HttpContext.Session.SetString(SessionClaims.Username, name);
+            HttpContext.Session.SetString(SessionClaims.DiscordId, id);
         }
 
-        public void GetFedoraClaims(out string name, out string groups)
+        private void GetFedoraClaims(out string name, out string groups)
         {
             name = HttpContext.Session.GetString(SessionClaims.Username);
             groups = HttpContext.Session.GetString(SessionClaims.Groups);
