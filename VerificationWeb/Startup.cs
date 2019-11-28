@@ -16,6 +16,7 @@ using RedditSharp;
 using VerificationWeb.Configuration;
 using VerificationWeb.Services;
 using VerificationWeb.EXtensions;
+using VerificationWeb.Models;
 
 namespace VerificationWeb
 {
@@ -49,8 +50,8 @@ namespace VerificationWeb
                 })
                 .AddDiscordAuthentication(Config.DiscordId, Config.DiscordSecret)
                 .AddRedditAuthentication(Config.RedditAuthId, Config.RedditAuthSecret)
-                .AddFedoraAuthentication("Fedora", Config.FasId, Config.FasSecret)
-                .AddRedhatAuthentication("Redhat", Config.RedhatClientId, Config.RedhatClientSecret, Config.RedhatOidcDiscoveryUri);
+                .AddFedoraAuthentication(SessionClaims.FedoraScheme, Config.FasId, Config.FasSecret)
+                .AddRedhatAuthentication(SessionClaims.RedhatScheme, Config.RedhatClientId, Config.RedhatClientSecret, Config.RedhatOidcDiscoveryUri);
             
             var webAgent = new RefreshTokenWebAgent(Config.RedditBotRefreshToken, Config.RedditBotId, Config.RedditBotSecret, Config.RedirectUri);
 

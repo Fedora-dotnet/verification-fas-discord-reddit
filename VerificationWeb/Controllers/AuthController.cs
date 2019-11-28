@@ -1,10 +1,14 @@
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using AspNet.Security.OAuth.Discord;
 using AspNet.Security.OAuth.Reddit;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using VerificationWeb.Models;
 using VerificationWeb.Services;
 
 namespace VerificationWeb.Controllers
@@ -33,33 +37,18 @@ namespace VerificationWeb.Controllers
 
         public IActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated) return Unauthorized();
+            
+            if (User.HasClaim(x => x.Issuer == SessionClaims.FedoraScheme))
             {
-                // maybe unhardcode this?
-                if (User.HasClaim(x => x.Issuer == "Fedora"))
-                {
-                    string groups = "";
-                    if (User.HasClaim(x => x.Type == "cla" && x.Value.Contains("done")))
-                    {
-                        groups += "cla/done ";
-                    }
+                SetFedoraClaims();
+                return RedirectToAction("Index", "Home");
+            }
 
-                    // string builder might be better
-                    groups += User.Claims.FirstOrDefault(x => x.Type == "groups")?.Value;
-
-                    HttpContext.Session.SetString("Groups", groups);
-                    HttpContext.Session.SetString("FasNickname",
-                        User.Claims.FirstOrDefault(x => x.Type == "nickname")?.Value);
-                    HttpContext.Session.SetString("BaseLoginType", "Fedora");
-                    return RedirectToAction("Index", "Home");
-                }
-
-                if (User.HasClaim(x => x.Issuer == "Redhat"))
-                {
-                    HttpContext.Session.SetString("username", User.Claims.FirstOrDefault(x => x.Type == "username")?.Value);
-                    HttpContext.Session.SetString("login_type", "Redhat");
-                }
-
+            if (User.HasClaim(x => x.Issuer == SessionClaims.RedhatScheme))
+            {
+                SetRedhatClaims();
+                return RedirectToAction("Index", "Home");
             }
 
             return Unauthorized();
@@ -68,12 +57,32 @@ namespace VerificationWeb.Controllers
         public IActionResult FedoraLogin()
         {
             return Challenge(new AuthenticationProperties {RedirectUri = "/auth"},
-                "Fedora");
+                SessionClaims.FedoraScheme);
         }
         public IActionResult RedhatLogin()
         {
             return Challenge(new AuthenticationProperties {RedirectUri = "/auth"},
-                "Redhat");
+                SessionClaims.RedhatScheme);
+        }
+
+        private void SetFedoraClaims()
+        {
+            StringBuilder allGroups = new StringBuilder();
+                
+            if (User.HasClaim(x => x.Type == SessionClaims.Cla && x.Value.Contains("done")))
+                allGroups.AppendLine("cla/done");
+
+            allGroups.AppendLine(User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Groups)?.Value);
+
+            HttpContext.Session.SetString(SessionClaims.Groups, allGroups.ToString());
+            HttpContext.Session.SetString(SessionClaims.Username, User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value);
+            HttpContext.Session.SetString(SessionClaims.LoginType, SessionClaims.FedoraScheme);
+        }
+
+        private void SetRedhatClaims()
+        {
+            HttpContext.Session.SetString(SessionClaims.Username, User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value);
+            HttpContext.Session.SetString(SessionClaims.LoginType, SessionClaims.RedhatScheme);
         }
     }
 }

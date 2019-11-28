@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using RedditSharp;
+using VerificationWeb.Models;
 using VerificationWeb.Services;
 
 namespace VerificationWeb.Controllers
@@ -17,23 +19,24 @@ namespace VerificationWeb.Controllers
 
         public RoleController(RoleService roleService, RefreshTokenWebAgent redditWebAgent)
         {
-        _roleService = roleService;
-        _redditWebAgent = redditWebAgent;
+            _roleService = roleService;
+            _redditWebAgent = redditWebAgent;
         }
 
         public async Task<IActionResult> Discord()
         {
-            // user can spam reload on the action and trigger the rate limit,
+            // watchout user can spam reload on the action and trigger the rate limit,
 
-            // if user successfully authed at discord
-            if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Discord"))
+            if (!User.Identity.IsAuthenticated || !User.HasClaim(x => x.Issuer == "Discord")) return Unauthorized();
             {
-                string username = User.Claims.FirstOrDefault(x => x.Type == "username")?.Value;
-                string userId = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+                string username = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value;
+                string userId = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Id)?.Value;
+                
                 SaveDiscordClaims(username, userId);
-                var loginType = HttpContext.Session.GetString("BaseLoginType");
+                
+                var loginType = HttpContext.Session.GetString(SessionClaims.LoginType);
 
-                if (loginType == "Fedora")
+                if (loginType == SessionClaims.FedoraScheme)
                 {
                     GetFedoraClaims(out string name, out string groups);
                     var roleConditions = new List<string>();
@@ -56,8 +59,9 @@ namespace VerificationWeb.Controllers
                     ViewData.Add("AddedRoles", rolesName);
                     return View("Discord");
                 }
-                else if (loginType == "RedHat")
+                else if (loginType == SessionClaims.FedoraScheme)
                 {
+                    
                 }
             }
 
@@ -137,8 +141,8 @@ namespace VerificationWeb.Controllers
 
         public void GetFedoraClaims(out string name, out string groups)
         {
-            name = HttpContext.Session.GetString("FasNickname");
-            groups = HttpContext.Session.GetString("Groups");
+            name = HttpContext.Session.GetString(SessionClaims.Username);
+            groups = HttpContext.Session.GetString(SessionClaims.Groups);
         }
     }
 }

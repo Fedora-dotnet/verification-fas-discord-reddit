@@ -15,25 +15,10 @@
 </style>
 
 <div class="text-center">
-    @* <h1 class="display-4">Welcome</h1> *@
-    @if (Model?.BaseLogintype != "Fedora")
-    {
-        <h4>
-            In order to verify as contributor please log in below<br>
-        </h4>
-        <h1>
-            <a href="/auth/FedoraLogin" class="btn btn-lg btn-primary">FAS Login</a>
-        </h1>
-        <h1>
-            <a href="/auth/RedhatLogin" class="btn btn-lg btn-warning btn-primary">Redhat Login</a>
-        </h1>
-    }
 
-    @if (User.Identity.IsAuthenticated)
-    {
-        @if (Model?.BaseLogintype == "Fedora")
+    @if (Model?.LoginType == SessionClaims.FedoraScheme || Model?.LoginType == SessionClaims.RedhatScheme)
         {
-            <h2>Welcome <b>@Model.FasNickname</b></h2>
+            <h2>Welcome <b>@Model?.Username</b></h2>
 @*              <p>I see you are member of all these groups: @Model.Groups<br></p> *@
 
             <h4>
@@ -55,8 +40,16 @@
                 </div>
             </h4>
         }
-        @if (Model?.BaseLogintype == "Redhat")
-        {
-        }
+    else
+    {
+        <h4>
+            In order to verify as contributor please log in below<br>
+        </h4>
+        <h1>
+            <a href="/auth/FedoraLogin" class="btn btn-lg btn-primary">FAS Login</a>
+        </h1>
+        <h1>
+            <a href="/auth/RedhatLogin" class="btn btn-lg btn-warning btn-primary">Redhat Login</a>
+        </h1>
     }
 </div>
