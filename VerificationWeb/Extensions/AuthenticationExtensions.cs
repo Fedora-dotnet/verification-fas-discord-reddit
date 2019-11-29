@@ -16,7 +16,7 @@ namespace VerificationWeb.EXtensions
         
         public static AuthenticationBuilder AddFedoraAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret)
         {
-            builder.AddOpenIdConnect(authScheme, o =>
+            return builder.AddOpenIdConnect(authScheme, o =>
             {
                 o.ClientId = clientId;
                 o.ClientSecret = clientSecret;
@@ -31,7 +31,6 @@ namespace VerificationWeb.EXtensions
                 o.CorrelationCookie.IsEssential = true;
                 o.GetClaimsFromUserInfoEndpoint = true;
             });
-            return builder;
         }
 
         public static AuthenticationBuilder AddDiscordAuthentication(this AuthenticationBuilder builder, string clientId, string clientSecret)
@@ -62,7 +61,6 @@ namespace VerificationWeb.EXtensions
 
         public static AuthenticationBuilder AddRedhatAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret, string configUri)
         {
-                      
             return builder.AddOpenIdConnect(authScheme, o =>
             {
                 o.ClientId = clientId;

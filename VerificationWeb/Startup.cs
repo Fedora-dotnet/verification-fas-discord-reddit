@@ -80,17 +80,15 @@ namespace VerificationWeb
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-//                app.UseHsts();
             }
             app.UseAuthentication();
             app.UseSession();
-            // setting https scheme because of the oidc lib and the way they create redirect uris
             app.Use((context, next) =>
             {
+            // setting https scheme because of the oidc lib and the way they create redirect uris
                 context.Request.Scheme = "https";
                 return next();
             });
-//            app.UseHsts();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
