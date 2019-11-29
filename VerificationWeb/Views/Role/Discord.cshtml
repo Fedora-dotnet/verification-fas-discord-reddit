@@ -1,4 +1,5 @@
 @using System.Collections
+@using Microsoft.AspNetCore.Http
 @model UserModel
 
 @{
@@ -9,7 +10,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="row">
-            <h1>You've been given these <img src="~/images/discord.png" style="width: 40px" alt="discord logo"/> roles:</h1><br>
+            <h1>@Context.Session.GetString(SessionClaims.DiscordUsername), you've been given these <img src="~/images/discord.png" style="width: 40px" alt="discord logo"/> roles:</h1><br>
         </div>
 
         <div class="row">

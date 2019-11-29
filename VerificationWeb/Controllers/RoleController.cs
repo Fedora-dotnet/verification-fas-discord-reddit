@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -38,32 +39,26 @@ namespace VerificationWeb.Controllers
 
                 if (loginType == SessionClaims.FedoraScheme)
                 {
-                    GetFedoraClaims(out string name, out string groups);
-                    var roleConditions = new List<string>();
+                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Split();
 
-                    var roles = groups.Split();
-                    roleConditions.AddRange(roles);
+                    var availableRoles = new List<string>();
 
-                    var rolesName = new List<string>();
-
-                    foreach (var x in roleConditions)
+                    string flair;
+                    foreach (var group in groups)
                     {
-                        // Check if the appropriate role exists so we wont get exceptions
-                        if (_roleService.Config.RolesConditions.ContainsKey(x))
-                            rolesName.Add(_roleService.Config.RolesConditions[x]);
+                        if(_roleService.Config.RedditFlairs.TryGetValue(group, out flair));
+                            availableRoles.Add(flair);
                     }
 
-                    await AddDiscordRoles(rolesName, Convert.ToUInt64(userId));
-
-                    // weakly typed, for now?
-                    ViewData.Add("AddedRoles", rolesName);
+                    await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), availableRoles);
+                    ViewData.Add("AddedRoles", availableRoles);
                     return View("Discord");
                 }
-
+                
                 if (loginType == SessionClaims.RedhatScheme)
                 {
                     var rolesName = new List<string> {"Redhat"};
-                    await AddDiscordRoles(rolesName, Convert.ToUInt64(userId));
+                    await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), rolesName);
                     ViewData.Add("AddedRoles", rolesName);
                     return View("Discord");
                 }
@@ -84,23 +79,18 @@ namespace VerificationWeb.Controllers
 
                 if (loginType == SessionClaims.FedoraScheme)
                 {
-                    GetFedoraClaims(out string name, out string groups);
+                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Split();
 
-                    var roleConditions = new List<string>();
+                    var availableFlairs = new List<string>();
 
-                    var roles = groups.Split();
-                    roleConditions.AddRange(roles);
-
-                    var rolesName = new List<string>();
-
-                    foreach (var x in roleConditions)
+                    string flair;
+                    foreach (var group in groups)
                     {
-                        // Check if the appropriate role exists so we wont get exceptions
-                        if (_roleService.Config.RedditFlairs.ContainsKey(x))
-                            rolesName.Add(_roleService.Config.RedditFlairs[x]);
+                        if(_roleService.Config.RedditFlairs.TryGetValue(group, out flair));
+                              availableFlairs.Add(flair);
                     }
 
-                    ViewData.Add("roles", rolesName);
+                    ViewData.Add("roles", availableFlairs);
                     return View("Reddit");
                 }
                 
@@ -120,37 +110,28 @@ namespace VerificationWeb.Controllers
             if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Reddit"))
             {
                 // validate the parameter from spoofing
-                if (!_roleService.Config.RedditFlairs.ContainsValue(flair))
+                if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.RedhatScheme)
                 {
-                    return Unauthorized("Nice try");
+                    if (_roleService.Config.RedditFlairs["Redhat"] != flair) return Unauthorized("Nice try");
                 }
-
-                var username = HttpContext.Session.GetString(SessionClaims.RedditUsername);
-                var reddit = new Reddit(_redditWebAgent, true);
-                var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
-                await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
-
-                return View("Success");
+                else if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.FedoraScheme)
+                {
+                    // TODO
+                }
             }
-            return Unauthorized("Nice try");
-        }
 
-        public async Task AddDiscordRoles(IEnumerable<string> roles, ulong userId)
-        {
-            // TODO Hide it from url access 
-            await _roleService.AssignRoleAsync(userId, roles);
+            var username = HttpContext.Session.GetString(SessionClaims.RedditUsername);
+            var reddit = new Reddit(_redditWebAgent);
+            var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
+            await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
+
+            return View("Success");
         }
 
         private void SaveDiscordClaims(string name, string id)
         {
-            HttpContext.Session.SetString(SessionClaims.Username, name);
+            HttpContext.Session.SetString(SessionClaims.DiscordUsername, name);
             HttpContext.Session.SetString(SessionClaims.DiscordId, id);
-        }
-
-        private void GetFedoraClaims(out string name, out string groups)
-        {
-            name = HttpContext.Session.GetString(SessionClaims.Username);
-            groups = HttpContext.Session.GetString(SessionClaims.Groups);
         }
     }
 }
