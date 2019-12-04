@@ -1,5 +1,6 @@
 Example config - appsettings.json
 
+```
 {
   "DiscordToken": "",                           <-- Token of the discord bot
   "DiscordId": "",                              <-- Client id for the discord authentication
@@ -39,3 +40,4 @@ Example config - appsettings.json
     "Redhat": "Employee",                       <-- "Redhat" key must be set, condition is automatically login through Redhat SSO
   }
 }
+```
