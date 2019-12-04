@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Internal;
@@ -39,15 +40,17 @@ namespace VerificationWeb.Controllers
 
                 if (loginType == SessionClaims.FedoraScheme)
                 {
-                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Split();
+                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Trim().Split();
 
                     var availableRoles = new List<string>();
 
-                    string flair;
+                    string role;
                     foreach (var group in groups)
                     {
-                        if(_roleService.Config.RedditFlairs.TryGetValue(group, out flair));
-                            availableRoles.Add(flair);
+                        if (_roleService.Config.RoleConditions.TryGetValue(group, out role))
+                        {
+                            availableRoles.Add(role);
+                        }
                     }
 
                     await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), availableRoles);
@@ -57,7 +60,8 @@ namespace VerificationWeb.Controllers
                 
                 if (loginType == SessionClaims.RedhatScheme)
                 {
-                    var rolesName = new List<string> {"Redhat"};
+                    var rolesName = new List<string>();
+                    rolesName.Add(_roleService.Config.RoleConditions["Redhat"]);
                     await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), rolesName);
                     ViewData.Add("AddedRoles", rolesName);
                     return View("Discord");
@@ -79,15 +83,17 @@ namespace VerificationWeb.Controllers
 
                 if (loginType == SessionClaims.FedoraScheme)
                 {
-                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Split();
+                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Trim().Split();
 
                     var availableFlairs = new List<string>();
 
                     string flair;
                     foreach (var group in groups)
                     {
-                        if(_roleService.Config.RedditFlairs.TryGetValue(group, out flair));
+                        if (_roleService.Config.RedditFlairs.TryGetValue(group, out flair))
+                        {
                               availableFlairs.Add(flair);
+                        }
                     }
 
                     ViewData.Add("roles", availableFlairs);
@@ -97,7 +103,8 @@ namespace VerificationWeb.Controllers
                 if (loginType == SessionClaims.RedhatScheme)
                 {
                     var rolesName = new List<string>();
-                    rolesName.Add(_roleService.Config.RedditFlairs["Redhat"]);
+                    var keyName = _roleService.Config.RoleConditions["Redhat"];
+                    rolesName.Add(_roleService.Config.RedditFlairs[keyName]);
                     ViewData.Add("roles", rolesName);
                     return View("Reddit");
                 }
@@ -112,11 +119,15 @@ namespace VerificationWeb.Controllers
                 // validate the parameter from spoofing
                 if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.RedhatScheme)
                 {
-                    if (_roleService.Config.RedditFlairs["Redhat"] != flair) return Unauthorized("Nice try");
+                    var keyName = _roleService.Config.RoleConditions["Redhat"];
+                    if (_roleService.Config.RedditFlairs[keyName] != flair) return Unauthorized("Nice try");
                 }
                 else if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.FedoraScheme)
                 {
-                    // TODO
+                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Trim().Split();
+
+                    if(!_roleService.Config.RedditFlairs.Any(x => groups.Contains(x.Key) && x.Value == flair))
+                        return Unauthorized("Nice try");
                 }
             }
 

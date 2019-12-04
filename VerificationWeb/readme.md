@@ -8,7 +8,6 @@ Example config - appsettings.json
 
   "FasId":"",                                   <-- Client id for fedora account authentication
   "FasSecret": "",                              <-- Client secret for fedora account authentication
-  "FedoraOidcDiscoveryUri" : "",                <-- URL to redhat OIDC configuration
 
   "RedditAuthId" :  "",                         <-- Client id of reddit authentication
   "RedditAuthSecret" : "",                      <-- Client secret of reddit authentication
@@ -26,16 +25,17 @@ Example config - appsettings.json
   "RoleConditions" : {                          <-- Each key is the requirement for the value Role or Flair
     "cla/done" : "Contributor",                 <-- to get flair or role "Contributor", user must have signed cla ("cla/done" claim)
     "dotnet-team": "Dotnet",                    <-- to get flair or role "Dotnet", user must be member of dotnet-team group
+     "Redhat": "Redhat"                       <-- Key redhat is necessary, its value is the name of the discord role
   },
 
   "DiscordRoles": {                             <-- Discord id of each role defined above
     "Contributor" : 605756010153639956,
     "Dotnet": 606110843276361729,
-    "Redhat": 649672841087942676                <-- "Redhat" key must be set, condition is automatically login through Redhat SSO
+    "Redhat": 649672841087942676                <-- "Redhat" key must be set (it can have different name based on the "Redhat" key value in RoleConditions), condition is automatically login through Redhat SSO
   },
-  "RedditFlairs" : {                            <-- Discord id of each role defined above
-    "Contributor" : "Contributor",
-    "Dotnet": "Dotnet",
+  "RedditFlairs" : {                            <-- Flair key = necessary groups, key name of the flair
+    "cla/done" : "Contributor",
+    "dotnet-team": "Dotnet",
     "Redhat": "Employee",                       <-- "Redhat" key must be set, condition is automatically login through Redhat SSO
   }
 }

@@ -20,10 +20,9 @@ namespace VerificationWeb.Configuration
         public string Subreddit { get; set; }
         public string RedirectUri { get; set; }
         public Dictionary<string, ulong> DiscordRoles { get; set; }
-        public Dictionary<string, string> RolesConditions { get; set; }
+        public Dictionary<string, string> RoleConditions { get; set; }
         public Dictionary<string, string> RedditFlairs { get; set; }
         
         public string RedhatOidcDiscoveryUri { get; set; }
-        public string FedoraOidcDiscoveryUri { get; set; }
     }
 }
