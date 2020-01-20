@@ -57,7 +57,7 @@
             {
                 @if (Context.Session.Keys.Contains(SessionClaims.Username))
                 {
-                    <p>User: <b>@Context.Session.GetString(SessionClaims.Username)</b></p>
+                    <p>User: <b>@Context.Session.GetString(SessionClaims.Username)</b> <a href="/Auth/Logout" class="btn btn-outline-dark"  style="margin-left: 10px">   Logout </a></p>
                 }
             }
         </div>

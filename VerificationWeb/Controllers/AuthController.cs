@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using AspNet.Security.OAuth.Discord;
 using AspNet.Security.OAuth.Reddit;
 using Microsoft.AspNetCore.Authentication;
@@ -65,6 +66,16 @@ namespace VerificationWeb.Controllers
                 SessionClaims.RedhatScheme);
         }
 
+        public IActionResult Logout()
+        {
+            // Authentication schemes have no log out endpoints, so I just delete all cookies
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+              Response.Cookies.Delete(cookie);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        
         private void SetFedoraClaims()
         {
             StringBuilder allGroups = new StringBuilder();
