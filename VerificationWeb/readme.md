@@ -17,6 +17,7 @@ Example config - appsettings.json
   "RedditBotRefreshToken" : "",                 <-- Refresh token of reddit bot app to retrieve access tokens
 
   "Subreddit" : "/r/subreddit,                  <-- Subreddit where the flairs are given at
+  "RedhatSubreddit" : "/r/subreddit,                  <-- Subreddit where the flairs are given at
   "RedirectUri" : "https://127.0.0.1:5001/",    <-- Redirect URI for the reddit bot app, base URI of the web.
 
   "RedhatClientId" : "",                        <-- Client id for redhat authentication

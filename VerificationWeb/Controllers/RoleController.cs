@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RedditSharp;
+using RedditSharp.Things;
 using VerificationWeb.Models;
 using VerificationWeb.Services;
 
@@ -33,9 +34,9 @@ namespace VerificationWeb.Controllers
             {
                 string username = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value;
                 string userId = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Id)?.Value;
-                
+
                 SaveDiscordClaims(username, userId);
-                
+
                 var loginType = HttpContext.Session.GetString(SessionClaims.LoginType);
 
                 if (loginType == SessionClaims.FedoraScheme)
@@ -57,7 +58,7 @@ namespace VerificationWeb.Controllers
                     ViewData.Add("AddedRoles", availableRoles);
                     return View("Discord");
                 }
-                
+
                 if (loginType == SessionClaims.RedhatScheme)
                 {
                     var rolesName = new List<string>();
@@ -92,14 +93,14 @@ namespace VerificationWeb.Controllers
                     {
                         if (_roleService.Config.RedditFlairs.TryGetValue(group, out flair))
                         {
-                              availableFlairs.Add(flair);
+                            availableFlairs.Add(flair);
                         }
                     }
 
                     ViewData.Add("roles", availableFlairs);
                     return View("Reddit");
                 }
-                
+
                 if (loginType == SessionClaims.RedhatScheme)
                 {
                     var rolesName = new List<string>();
@@ -109,6 +110,7 @@ namespace VerificationWeb.Controllers
                     return View("Reddit");
                 }
             }
+
             return Unauthorized();
         }
 
@@ -116,27 +118,33 @@ namespace VerificationWeb.Controllers
         {
             if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Reddit"))
             {
+                var username = HttpContext.Session.GetString(SessionClaims.RedditUsername);
+                var reddit = new Reddit(_redditWebAgent);
+                Subreddit subreddit;
                 // validate the parameter from spoofing
                 if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.RedhatScheme)
                 {
                     var keyName = _roleService.Config.RoleConditions["Redhat"];
-                    if (_roleService.Config.RedditFlairs[keyName] != flair) return Unauthorized("Nice try");
+                    if (_roleService.Config.RedditFlairs[keyName] != flair) 
+                        return Unauthorized("Nice try");
+                    
+                    subreddit = await reddit.GetSubredditAsync(_roleService.Config.RedhatSubreddit);
                 }
-                else if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.FedoraScheme)
+                else
                 {
                     string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Trim().Split();
 
-                    if(!_roleService.Config.RedditFlairs.Any(x => groups.Contains(x.Key) && x.Value == flair))
+                    if (!_roleService.Config.RedditFlairs.Any(x => groups.Contains(x.Key) && x.Value == flair))
                         return Unauthorized("Nice try");
+                    
+                    subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
                 }
+                if (subreddit != null) await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
+                // Check for error TODO (look into the lib source for possible error states)
+                return View("Success");
             }
 
-            var username = HttpContext.Session.GetString(SessionClaims.RedditUsername);
-            var reddit = new Reddit(_redditWebAgent);
-            var subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
-            await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
-
-            return View("Success");
+            return Unauthorized();
         }
 
         private void SaveDiscordClaims(string name, string id)
