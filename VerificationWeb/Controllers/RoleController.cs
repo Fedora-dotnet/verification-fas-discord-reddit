@@ -41,29 +41,16 @@ namespace VerificationWeb.Controllers
 
                 if (loginType == SessionClaims.FedoraScheme)
                 {
-                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Trim().Split();
+                    string groups = HttpContext.Session.GetString(SessionClaims.Groups);
 
-                    var availableRoles = new List<string>();
-
-                    string role;
-                    foreach (var group in groups)
-                    {
-                        if (_roleService.Config.RoleConditions.TryGetValue(group, out role))
-                        {
-                            availableRoles.Add(role);
-                        }
-                    }
-
-                    await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), availableRoles);
-                    ViewData.Add("AddedRoles", availableRoles);
+                    var rolesNames = await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), groups);
+                    ViewData.Add("AddedRoles", rolesNames);
                     return View("Discord");
                 }
 
                 if (loginType == SessionClaims.RedhatScheme)
                 {
-                    var rolesName = new List<string>();
-                    rolesName.Add(_roleService.Config.RoleConditions["Redhat"]);
-                    await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), rolesName);
+                    var rolesName = await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), "Redhat");
                     ViewData.Add("AddedRoles", rolesName);
                     return View("Discord");
                 }

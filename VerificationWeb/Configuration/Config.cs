@@ -20,10 +20,14 @@ namespace VerificationWeb.Configuration
         public string Subreddit { get; set; }
         public string RedhatSubreddit { get; set; }
         public string RedirectUri { get; set; }
+        
+        public List<ulong> ContributorRoles { get; set; }
+        public List<ulong> DotnetRoles { get; set; }
+        public List<ulong> RedhatRoles { get; set; }
         public Dictionary<string, ulong> DiscordRoles { get; set; }
         public Dictionary<string, string> RoleConditions { get; set; }
         public Dictionary<string, string> RedditFlairs { get; set; }
-        
+                
         public string RedhatOidcDiscoveryUri { get; set; }
     }
 }
