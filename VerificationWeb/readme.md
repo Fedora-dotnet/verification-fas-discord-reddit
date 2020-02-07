@@ -30,11 +30,11 @@ Example config - appsettings.json
      "Redhat": "Redhat"                       <-- Key redhat is necessary, its value is the name of the discord role
   },
 
-  "DiscordRoles": {                             <-- Discord id of each role defined above
-    "Contributor" : 605756010153639956,
-    "Dotnet": 606110843276361729,
-    "Redhat": 649672841087942676                <-- "Redhat" key must be set (it can have different name based on the "Redhat" key value in RoleConditions), condition is automatically login through Redhat SSO
-  },
+  "ContributorRoles": [605756010153639956, 675171600278093834], <-- All roles that user gets as contributor
+  "DotnetRoles": [606110843276361729],
+  "RedhatRoles": [649672841087942676],
+    
+    
   "RedditFlairs" : {                            <-- Flair key = necessary groups, key name of the flair
     "cla/done" : "Contributor",
     "dotnet-team": "Dotnet",
