@@ -10,25 +10,65 @@ namespace VerificationWeb.Services
 {
     public class RoleService
     {
-        private readonly SocketGuild _guild;
+        private readonly DiscordSocketClient _client;
         public readonly Config Config;
 
         public RoleService(Config config, DiscordSocketClient client)
         {
             Config = config;
-            _guild = client.Guilds.FirstOrDefault(x => x.Id == Config.GuildId);
+            _client = client;
         }
 
-        public async Task AssignRoleAsync(ulong userId, IEnumerable<string> roleNames)
+        // Returns name of the roles
+        public async Task<List<string>> AssignRoleAsync(ulong userId, string groups)
         {
+            var roleNames = new List<string>();
             var rolesToAdd = new List<IRole>();
-                foreach (string roleName in roleNames)
+
+            foreach (var guild in _client.Guilds)
+            {
+                
+                if (!guild.Users.Any(x => x.Id == userId))
+                    break;
+
+                foreach (var role in guild.Roles)
                 {
-                    var roleId = Config.DiscordRoles[roleName];
-                    rolesToAdd.Add(_guild.GetRole(roleId));
+                    if (groups.Contains("cla/done"))
+                    {
+                        if (Config.ContributorRoles.Contains(role.Id))
+                        {
+                            var newRole = guild.GetRole(role.Id);
+                            rolesToAdd.Add(newRole);
+                            roleNames.Add(newRole.Name);
+                        }
+                    }
+
+                    if (groups.Contains("dotnet-team"))
+                    {
+                        if (Config.DotnetRoles.Contains(role.Id))
+                        {
+                            var newRole = guild.GetRole(role.Id);
+                            rolesToAdd.Add(newRole);
+                            roleNames.Add(newRole.Name);
+                        }
+                    }
+
+                    if (groups.Contains("Redhat"))
+                    {
+                        if (Config.RedhatRoles.Contains(role.Id))
+                        {
+                            var newRole = guild.GetRole(role.Id);
+                            rolesToAdd.Add(newRole);
+                            roleNames.Add(newRole.Name);
+                        }
+                    }
                 }
 
-            await _guild.GetUser(userId).AddRolesAsync(rolesToAdd);
+                await guild.GetUser(userId).AddRolesAsync(rolesToAdd);
+                rolesToAdd.Clear();
+            }
+
+            return roleNames;
         }
     }
 }
