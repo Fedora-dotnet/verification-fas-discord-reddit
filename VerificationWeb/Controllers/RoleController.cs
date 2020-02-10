@@ -30,31 +30,32 @@ namespace VerificationWeb.Controllers
         {
             // watchout user can spam reload on the action and trigger the rate limit,
 
-            if (!User.Identity.IsAuthenticated || !User.HasClaim(x => x.Issuer == "Discord")) return Unauthorized();
+            if (!User.Identity.IsAuthenticated || !User.HasClaim(x => x.Issuer == "Discord")) 
+                return Unauthorized();
+
+            string username = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value;
+            string userId = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Id)?.Value;
+            
+            SaveDiscordClaims(username, userId);
+
+            var loginType = HttpContext.Session.GetString(SessionClaims.LoginType);
+
+            if (loginType == SessionClaims.FedoraScheme)
             {
-                string username = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value;
-                string userId = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Id)?.Value;
+                string groups = HttpContext.Session.GetString(SessionClaims.Groups);
 
-                SaveDiscordClaims(username, userId);
-
-                var loginType = HttpContext.Session.GetString(SessionClaims.LoginType);
-
-                if (loginType == SessionClaims.FedoraScheme)
-                {
-                    string groups = HttpContext.Session.GetString(SessionClaims.Groups);
-
-                    var rolesNames = await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), groups);
-                    ViewData.Add("AddedRoles", rolesNames);
-                    return View("Discord");
-                }
-
-                if (loginType == SessionClaims.RedhatScheme)
-                {
-                    var rolesName = await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), "Redhat");
-                    ViewData.Add("AddedRoles", rolesName);
-                    return View("Discord");
-                }
+                var rolesNames = await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), groups);
+                ViewData.Add("AddedRoles", rolesNames);
+                return View("Discord");
             }
+
+            if (loginType == SessionClaims.RedhatScheme)
+            {
+                var rolesName = await _roleService.AssignRoleAsync(Convert.ToUInt64(userId), "Redhat");
+                ViewData.Add("AddedRoles", rolesName);
+                return View("Discord");
+            }
+
 
             return Unauthorized();
         }
@@ -91,8 +92,7 @@ namespace VerificationWeb.Controllers
                 if (loginType == SessionClaims.RedhatScheme)
                 {
                     var rolesName = new List<string>();
-                    var keyName = _roleService.Config.RoleConditions["Redhat"];
-                    rolesName.Add(_roleService.Config.RedditFlairs[keyName]);
+                    rolesName.Add(_roleService.Config.RedditFlairs["Redhat"]);
                     ViewData.Add("roles", rolesName);
                     return View("Reddit");
                 }
@@ -103,35 +103,37 @@ namespace VerificationWeb.Controllers
 
         public async Task<IActionResult> GetRedditFlair(string flair)
         {
-            if (User.Identity.IsAuthenticated && User.HasClaim(x => x.Issuer == "Reddit"))
-            {
-                var username = HttpContext.Session.GetString(SessionClaims.RedditUsername);
-                var reddit = new Reddit(_redditWebAgent);
-                Subreddit subreddit;
-                // validate the parameter from spoofing
-                if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.RedhatScheme)
-                {
-                    var keyName = _roleService.Config.RoleConditions["Redhat"];
-                    if (_roleService.Config.RedditFlairs[keyName] != flair) 
-                        return Unauthorized("Nice try");
-                    
-                    subreddit = await reddit.GetSubredditAsync(_roleService.Config.RedhatSubreddit);
-                }
-                else
-                {
-                    string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Trim().Split();
+            if (!User.Identity.IsAuthenticated || !User.HasClaim(x => x.Issuer == "Reddit")) return Unauthorized();
 
-                    if (!_roleService.Config.RedditFlairs.Any(x => groups.Contains(x.Key) && x.Value == flair))
-                        return Unauthorized("Nice try");
-                    
-                    subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
-                }
-                if (subreddit != null) await subreddit.SetUserFlairAsync(username, "contributorFlair", flair);
-                // Check for error TODO (look into the lib source for possible error states)
-                return View("Success");
+            var username = HttpContext.Session.GetString(SessionClaims.RedditUsername);
+            var reddit = new Reddit(_redditWebAgent);
+            Subreddit subreddit;
+            string flairCss;
+            // validate the parameter from spoofing
+            if (HttpContext.Session.GetString(SessionClaims.LoginType) == SessionClaims.RedhatScheme)
+            {
+                if (_roleService.Config.RedditFlairs["Redhat"] != flair)
+                    return Unauthorized("Nice try");
+
+                subreddit = await reddit.GetSubredditAsync(_roleService.Config.RedhatSubreddit);
+                flairCss = _roleService.Config.RedhatFlairCss;
+            }
+            else
+            {
+                string[] groups = HttpContext.Session.GetString(SessionClaims.Groups).Trim().Split();
+
+                if (!_roleService.Config.RedditFlairs.Any(x => groups.Contains(x.Key) && x.Value == flair))
+                    return Unauthorized("Nice try");
+
+                subreddit = await reddit.GetSubredditAsync(_roleService.Config.Subreddit);
+                flairCss = _roleService.Config.FedoraFlairCss;
             }
 
-            return Unauthorized();
+            if (subreddit != null)
+                await subreddit.SetUserFlairAsync(username, flairCss, flair);
+
+            // Check for error TODO (look into the lib source for possible error states)
+            return View("Success");
         }
 
         private void SaveDiscordClaims(string name, string id)

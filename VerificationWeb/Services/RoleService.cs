@@ -25,45 +25,63 @@ namespace VerificationWeb.Services
             var roleNames = new List<string>();
             var rolesToAdd = new List<IRole>();
 
+            bool isRedhat = groups.Contains("Redhat");
+            bool isContributor = groups.Contains("cla/done");
+            bool isDotnet = groups.Contains("dotnet-team");
+            
+            // Maybe TODO, prepend name of the guild to the role name so the user can see where he got the roles?
+            
             foreach (var guild in _client.Guilds)
             {
                 
-                if (!guild.Users.Any(x => x.Id == userId))
-                    break;
+                if (guild.GetUser(userId) == null)
+                    continue;
 
-                foreach (var role in guild.Roles)
+                if (isRedhat)
                 {
-                    if (groups.Contains("cla/done"))
+                    foreach (var roleId in Config.RedhatRoles)
                     {
-                        if (Config.ContributorRoles.Contains(role.Id))
+                        var newRole = guild.GetRole(roleId);
+                        if (newRole != null)
                         {
-                            var newRole = guild.GetRole(role.Id);
                             rolesToAdd.Add(newRole);
-                            roleNames.Add(newRole.Name);
-                        }
-                    }
-
-                    if (groups.Contains("dotnet-team"))
-                    {
-                        if (Config.DotnetRoles.Contains(role.Id))
-                        {
-                            var newRole = guild.GetRole(role.Id);
-                            rolesToAdd.Add(newRole);
-                            roleNames.Add(newRole.Name);
-                        }
-                    }
-
-                    if (groups.Contains("Redhat"))
-                    {
-                        if (Config.RedhatRoles.Contains(role.Id))
-                        {
-                            var newRole = guild.GetRole(role.Id);
-                            rolesToAdd.Add(newRole);
-                            roleNames.Add(newRole.Name);
+                            roleNames.Add($"{guild.Name} - {newRole.Name}");
+                            // Only 1 Redhat role per guild? Or is there reason for more roles to exist?
+                            break;
                         }
                     }
                 }
+                else
+                {
+                    if (isContributor)
+                    {
+                        foreach (var roleId in Config.ContributorRoles)
+                        {
+                            var newRole = guild.GetRole(roleId);
+                            if (newRole != null)
+                            {
+                                rolesToAdd.Add(newRole);
+                                roleNames.Add($"{guild.Name} - {newRole.Name}");
+                                break;
+                            }
+                        }
+                    }
 
+                    if (isDotnet)
+                    {
+                        foreach (var roleId in Config.DotnetRoles)
+                        {
+                            var newRole = guild.GetRole(roleId);
+                            if (newRole != null)
+                            {
+                                rolesToAdd.Add(newRole);
+                                roleNames.Add($"{guild.Name} - {newRole.Name}");
+                                break;
+                            }
+                        }
+                    }
+                }
+                
                 await guild.GetUser(userId).AddRolesAsync(rolesToAdd);
                 rolesToAdd.Clear();
             }

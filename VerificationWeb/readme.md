@@ -24,13 +24,12 @@ Example config - appsettings.json
   "RedhatClientSecret" : "",                    <-- Client secret for redhat authentication
   "RedhatOidcDiscoveryUri" : "",                <-- URL to redhat OIDC configuration
 
-  "RoleConditions" : {                          <-- Each key is the requirement for the value Role or Flair
-    "cla/done" : "Contributor",                 <-- to get flair or role "Contributor", user must have signed cla ("cla/done" claim)
-    "dotnet-team": "Dotnet",                    <-- to get flair or role "Dotnet", user must be member of dotnet-team group
-     "Redhat": "Redhat"                       <-- Key redhat is necessary, its value is the name of the discord role
-  },
+    // Removed older RoleConditions,
+    
+  "FedoraFlairCss" : "FedoraFlairCss",
+  "RedhatFlairCss" : "RedhatFlairCss",
 
-  "ContributorRoles": [605756010153639956, 675171600278093834], <-- All roles that user gets as contributor
+  "ContributorRoles": [605756010153639956, 675171600278093834], <-- All roles that user gets as contributor at any server
   "DotnetRoles": [606110843276361729],
   "RedhatRoles": [649672841087942676],
     
