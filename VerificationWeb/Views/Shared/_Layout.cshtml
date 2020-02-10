@@ -47,7 +47,7 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-md navbar-light bg-white box-shadow mb-auto justify-content-around">
+    <nav class="navbar navbar-expand-md navbar-dark bg-transparent box-shadow mb-auto justify-content-around">
         <div class="col-6">
             <a style="font-size: x-large" class="nav-link navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img  src="~/images/fedora.png" width="30px" height="30px"  alt="fedora"/> Home </a>
         </div>
@@ -57,7 +57,7 @@
             {
                 @if (Context.Session.Keys.Contains(SessionClaims.Username))
                 {
-                    <p>User: <b>@Context.Session.GetString(SessionClaims.Username)</b> <a href="/Auth/Logout" class="btn btn-outline-dark"  style="margin-left: 10px">   Logout </a></p>
+                    <p>User: <b>@Context.Session.GetString(SessionClaims.Username)</b> <a href="/Auth/Logout" class="btn btn-outline-light"  style="margin-left: 10px">   Logout </a></p>
                 }
             }
         </div>
@@ -72,7 +72,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2019 - Fedora & Red Hat verification web
+        &copy; 2019-@DateTime.UtcNow.Year - Fedora & Red Hat verification web
     </div>
 </footer>
 
