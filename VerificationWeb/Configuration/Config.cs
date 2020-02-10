@@ -13,6 +13,10 @@ namespace VerificationWeb.Configuration
         public string RedditAuthSecret { get; set; }
         public string RedditBotId { get; set; }
         public string RedditBotSecret { get; set; }
+        
+        public string FedoraFlairCss { get; set; }
+        
+        public string RedhatFlairCss { get; set; }
         public string RedditBotRefreshToken { get; set; }
         public string RedhatClientId { get; set; }
         public string RedhatClientSecret { get; set; }
