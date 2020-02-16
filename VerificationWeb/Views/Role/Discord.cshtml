@@ -3,30 +3,24 @@
 @model UserModel
 
 @{
-    ViewData["Title"] = "Discord roles";
+    ViewData["Title"] = "Discord - Fedora Verificator";
 }
+<div class="container alert alert-info my-3">
+    If you do not see a Discord/role combination in this list that you are looking for, it is possible that you are logged in on a wrong account which is not in the server you're after.
+</div>
 
-<div class="container">
+<div class="container my-auto text-center">
     @if (User.Identity.IsAuthenticated)
     {
-        <div class="row">
-            <h1>@Context.Session.GetString(SessionClaims.DiscordUsername), you've been given these <img src="~/images/discord.png" style="width: 40px" alt="discord logo"/> roles:</h1><br>
-        </div>
-
-        <div class="row">
-            <br>
-        </div>
-        <div class="row text-center">
-            <ul class="list-group col-lg">
-                @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
-                {
-                    <li class="list-group-item font-weight-bolder">@x</li>
-                }
-            </ul>
-        </div>
-        <div class="row">
-            <br>
-            If you do not see a Discord/role combination in this list that you are looking for, it is possible that you are logged in on a wrong account which is not in the server you're after.
-        </div>
+        <h2 class="d-flex align-items-center">
+            <img src="~/images/discord.svg" class="small-icon rounded-circle mr-2" alt="Discord Logo"/>
+            @Context.Session.GetString(SessionClaims.DiscordUsername), you've been given these roles:
+        </h2>
+        <ul>
+            @foreach (var x in (IEnumerable) ViewData["AddedRoles"])
+            {
+                <li><span class="badge badge-primary">@x</span></li>
+            }
+        </ul>
     }
 </div>

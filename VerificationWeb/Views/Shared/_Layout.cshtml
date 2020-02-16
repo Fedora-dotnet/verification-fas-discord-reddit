@@ -2,32 +2,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-    .buttonlogo {
-      background-color: transparent;
-      border: none;
-      color: white;
-      /*padding: 15px 32px;*/
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
-      .button{
-          background-color: dimgrey;
-          border: #1d2124;
-          color: white;
-          padding: 15px 32px;
-          text-align: center;
-          text-decoration: none;
-          display: inline-block;
-          font-size: 16px;
-          margin: 4px 2px;
-          cursor: pointer;
-        }
-     </style>
 
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -37,46 +11,51 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+        <link rel="stylesheet" href="https://apps.fedoraproject.org/global/fedora-bootstrap-1.5.0/fedora-bootstrap.min.css"
               crossorigin="anonymous"
-              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"/>
+              integrity="sha384-sP7GRmaXVgvziloAQfY0eqn1lWHf55f7EWQwxEYh/iAIUzcUZr9olNPo1d/J9vm6"/>
     </environment>
     <link rel="stylesheet" href="~/css/site.css"/>
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <meta property="og:title" content="Fedora Verification Web">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta property="og:title" content="Fedora Verificator">
     <meta property="og:description" content="Verifies Fedora contributors & Red Hat employees and assigns them appropriate Discord roles and Reddit flairs.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="http://valkyrja.app/img/valkyrja-geared-517p.png">
     <meta property="og:url" content="/">
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-md navbar-dark bg-transparent box-shadow mb-auto justify-content-around">
-        <div class="col-6">
-            <a style="font-size: x-large" class="nav-link navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img  src="~/images/fedora.png" width="30px" height="30px"  alt="fedora"/> Home </a>
-        </div>
-        <div class="nav-item active col-6" style="text-align: right; font-size: larger ;position: relative; top: 8px">
-            @* Adds user nickname to the top right corner after authentication *@
-            @if (User.Identity.IsAuthenticated)
+<nav class="navbar navbar-light masthead p-0 navbar-expand">
+    <div class="container">
+        <a class="nav-link navbar-brand" href="/"><img alt="fedora" src="~/images/fedora-verificator.png" height="40px"></a>
+        @* Adds user nickname to the top right corner after authentication *@
+        @if (User.Identity.IsAuthenticated)
+        {
+            @if (Context.Session.Keys.Contains(SessionClaims.Username))
             {
-                @if (Context.Session.Keys.Contains(SessionClaims.Username))
-                {
-                    <p>User: <b>@Context.Session.GetString(SessionClaims.Username)</b> <a href="/Auth/Logout" class="btn btn-outline-light"  style="margin-left: 10px">   Logout </a></p>
-                }
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown ml-3">
+                        <a data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                            @* <img src="" class="avatar rounded-circle mr-1 border"> *@
+                            <strong>@Context.Session.GetString(SessionClaims.Username)</strong>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-header">
+                                <strong>@Context.Session.GetString(SessionClaims.Username)</strong>
+                            </div>
+                            <a class="dropdown-item" href="/Auth/Logout">Log Out</a>
+                        </div>
+                    </li>
+                </ul>
             }
-        </div>
-    </nav>
-</header>
+        }
+    </div>
+</nav>
 <partial name="_CookieConsentPartial"/>
-<div class="my-container">
-    <main role="main" class="">
-        @RenderBody()
-    </main>
+<div class="bodycontent">
+    @RenderBody()
 </div>
 
-<footer class="border-top footer text-muted">
+<footer class="footer text-white text-xs-center py-3">
     <div class="container">
         &copy; 2019-@DateTime.UtcNow.Year - Fedora & Red Hat verification web
     </div>
@@ -93,7 +72,7 @@
             crossorigin="anonymous"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
         </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+    <script src="https://apps.fedoraproject.org/global/fedora-bootstrap-1.5.0/fedora-bootstrap.min.js"
             asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
             crossorigin="anonymous"
