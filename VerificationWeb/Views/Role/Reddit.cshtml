@@ -2,25 +2,20 @@
 @model UserModel
 
 @{
-    ViewData["Title"] = "Reddit flairs";
+    ViewData["Title"] = "Reddit - Fedora Verificator";
 }
-<div class="container">
+<div class="container my-auto text-center">
     @if (User.Identity.IsAuthenticated)
     {
-        <div class="row">
-            <h1>@Context.Session.GetString(SessionClaims.RedditUsername), pick your <img src="~/images/reddit.png" style="width: 40px" alt="discord logo"/> flair:</h1>
-        </div>
-        <div class="row">
-            <br/>
-        </div>
-        <div class="row">
-
-            <ul class="list-group col-lg">
-                @foreach (var x in (List<string>) ViewData["roles"])
-                {
-                    <a href="/Role/GetRedditFlair?flair=@x" class="font-weight-bolder list-group-item list-group-item-action text-center">@x</a>
-                }
-            </ul>
-        </div>
+        <h1>
+            <img src="~/images/reddit.svg" class="small-icon rounded-circle mr-2" alt="Reddit Logo"/>
+            @Context.Session.GetString(SessionClaims.RedditUsername), pick your Reddit flair:
+        </h1>
+        <ul>
+            @foreach (var x in (List<string>) ViewData["roles"])
+            {
+                <li><a href="/Role/GetRedditFlair?flair=@x" class="badge badge-primary">@x</a></li>
+            }
+        </ul>
     }
 </div>

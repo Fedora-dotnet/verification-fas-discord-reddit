@@ -1,53 +1,34 @@
 ﻿@model UserModel
 
 @{
-    ViewData["Title"] = "Verify!";
+    ViewData["Title"] = "Fedora Verificator";
 }
 
-<style>
-    .brightness {
-        display: inline-block;
-    
-    }
-    .brightness img:hover {
-        opacity: .5;
-    }
-</style>
-
-<div class="text-center">
+<div class="container my-auto text-center">
 
     @if (Model?.LoginType == SessionClaims.FedoraScheme || Model?.LoginType == SessionClaims.RedhatScheme)
         {
-            <h2>Welcome <b>@Model?.Username</b></h2>
+            <h2>Hi <span>@Model?.Username</span>!</h2>
 @*              <p>I see you are member of all these groups: @Model.Groups<br></p> *@
-
-            <h4>
-                Where do you want to get your roles?<br><a style="font-size: small"> (Click the icon)</a><br><br>
-                <div class="brightness">
-                    <b>
-                        <a href="/Auth/DiscordLogin" class="" style="margin-right: 50px">
-                            <img src="~/images/discord.png" style="width: 100px" alt="discord logo"/>
-                        </a>
-                    </b>
-                </div>
-                <div class="brightness">
-                    <b>
-                        <a href="/Auth/RedditLogin" class="">
-                            <img src="~/images/reddit.png" style="width: 100px" alt="reddit logo"/>
-                        </a>
-                    </b>
-                </div>
-            </h4>
+            <h4>Where would you like to get your roles?</h4>
+            <p class="text-muted">Click on the icon</p>
+            <div class="d-flex justify-content-center">
+                <a href="/Auth/DiscordLogin" class="app-icon m-4" title="Discord">
+                    <img src="~/images/discord.svg" alt="Discord Logo" class="d-block w-100">
+                </a>
+                <a href="/Auth/RedditLogin" class="app-icon m-4" title="Reddit">
+                    <img src="~/images/reddit.svg" alt="Reddit Logo" class="d-block w-100">
+                </a>
+            </div>
         }
     else
     {
         <h4>
-            In order to verify as contributor please log in below<br>
+            In order to verify as contributor please log in below
         </h4>
-        <h1 class="text-md-center">
-            <a href="/auth/RedhatLogin" class="btn btn-lg btn-danger btn-primary">Red Hat Login</a>
-            <br>
-            <a href="/auth/FedoraLogin" class="btn btn-lg btn-primary">FAS Login</a>
-        </h1>
+        <div>
+            <a href="/auth/RedhatLogin" class="btn btn-lg btn-danger d-inline-block">Red Hat Login</a>
+            <a href="/auth/FedoraLogin" class="btn btn-lg btn-primary d-inline-block">Fedora Login</a>
+        </div>
     }
 </div>
