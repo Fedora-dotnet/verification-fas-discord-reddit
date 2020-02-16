@@ -21,3 +21,8 @@ html, body, .bodycontent {
     border-radius: 33%;
 }
 
+.small-icon {
+    height: 2rem;
+    width: 2rem;
+}
+
