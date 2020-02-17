@@ -7,17 +7,22 @@
 
 @if (showBanner)
 {
-    <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
-        We are using cookies only to store neccessary data for verification.
-        <button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
-            <span aria-hidden="true">Accept</span>
-        </button>
+    <div class="bodycontent h-auto">
+        <div class="container py-3">
+            <div id="cookieConsent" class="alert alert-info fade show m-0 d-flex align-items-center" role="alert">
+                We are using cookies only to store neccessary data for verification.
+                <button type="button" class="ml-auto btn btn-sm btn-outline-info" data-cookie-string="@cookieString">
+                    <span>Accept</span>
+                </button>
+            </div>
+        </div>
     </div>
     <script>
         (function () {
             var button = document.querySelector("#cookieConsent button[data-cookie-string]");
             button.addEventListener("click", function (event) {
                 document.cookie = button.dataset.cookieString;
+                $("#cookieConsent").alert('close');
             }, false);
         })();
     </script>
