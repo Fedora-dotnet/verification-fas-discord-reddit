@@ -2,7 +2,7 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 html, body, .bodycontent {
-  height: 100vh;
+  height: 100%;
   max-width: 100vw;
   margin: 0;
   display: flex;
