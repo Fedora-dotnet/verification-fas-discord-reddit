@@ -65,7 +65,7 @@ namespace VerificationWeb.EXtensions
             {
                 o.ClientId = clientId;
                 o.ClientSecret = clientSecret;
-                o.Authority = "https://auth.stage.redhat.com/auth/realms/EmployeeIDP";
+                o.Authority = "https://auth.redhat.com/auth/realms/EmployeeIDP";
                 o.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(configUri,new OpenIdConnectConfigurationRetriever(),
                     new HttpDocumentRetriever());
                 o.Configuration = o.ConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
