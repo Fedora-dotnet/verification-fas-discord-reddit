@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using RedditSharp;
 using RedditSharp.Things;
 using VerificationWeb.Models;
@@ -30,12 +27,12 @@ namespace VerificationWeb.Controllers
         {
             // watchout user can spam reload on the action and trigger the rate limit,
 
-            if (!User.Identity.IsAuthenticated || !User.HasClaim(x => x.Issuer == "Discord")) 
+            if (!User.Identity.IsAuthenticated || !User.HasClaim(x => x.Issuer == "Discord"))
                 return Unauthorized();
 
             string username = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value;
             string userId = User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Id)?.Value;
-            
+
             SaveDiscordClaims(username, userId);
 
             var loginType = HttpContext.Session.GetString(SessionClaims.LoginType);
