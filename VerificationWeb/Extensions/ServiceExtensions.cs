@@ -24,7 +24,8 @@ namespace VerificationWeb.EXtensions
             {
                 services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig()
                 {
-                    LogLevel = LogSeverity.Warning
+                    LogLevel = LogSeverity.Warning,
+                    AlwaysDownloadUsers = true,
                 }));
             }
 
