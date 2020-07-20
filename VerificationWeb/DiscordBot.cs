@@ -30,12 +30,24 @@ namespace VerificationWeb
             Console.WriteLine("DiscordBot is up and running");
 
             _client.Log += Log;
-
+            _client.Disconnected += OnDisconnected;
             await Run();
 
             await Task.Delay(-1);
         }
+        private Task OnDisconnected(Exception exception)
+        {
+            Console.WriteLine("Bot - Disconnected event.");
 
+            if (exception.Message == "Server requested a reconnect" ||
+                exception.Message == "Server missed last heartbeat")
+                return Task.CompletedTask;
+
+            Dispose();
+            Console.WriteLine("Shutting down.");
+            Environment.Exit(0); // force restart of the whole application
+            return Task.CompletedTask;
+        }
         private static Task Log(LogMessage arg)
         {
             Console.WriteLine(arg.Message);
