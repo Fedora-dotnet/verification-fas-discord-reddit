@@ -13,16 +13,16 @@ namespace VerificationWeb.EXtensions
 {
     internal static class AuthenticationExtensions
     {
-        
-        public static AuthenticationBuilder AddFedoraAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret)
+
+        public static AuthenticationBuilder AddFedoraAuthentication(this AuthenticationBuilder builder,string authScheme,string clientId, string clientSecret, string url)
         {
             return builder.AddOpenIdConnect(authScheme, o =>
             {
                 o.ClientId = clientId;
                 o.ClientSecret = clientSecret;
-                o.Authority = "https://iddev.fedorainfracloud.org";
-                o.Scope.Add("https://id.fedoraproject.org/scope/groups");
-                o.Scope.Add("https://id.fedoraproject.org/scope/cla");
+                o.Authority = url;
+                o.Scope.Add($"{url}/scope/groups");
+                o.Scope.Add($"{url}/scope/cla");
                 o.ClaimActions.MapJsonKey(SessionClaims.Cla, SessionClaims.Cla);
                 o.ClaimActions.MapJsonKey(SessionClaims.Username, "nickname");
                 o.ClaimActions.MapJsonKey(SessionClaims.Groups, SessionClaims.Groups);

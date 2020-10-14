@@ -46,9 +46,9 @@ namespace VerificationWeb
                 })
                 .AddDiscordAuthentication(Config.DiscordId, Config.DiscordSecret)
                 .AddRedditAuthentication(Config.RedditAuthId, Config.RedditAuthSecret)
-                .AddFedoraAuthentication(SessionClaims.FedoraScheme, Config.FasId, Config.FasSecret)
+                .AddFedoraAuthentication(SessionClaims.FedoraScheme, Config.FasId, Config.FasSecret, Config.FasUrl)
                 .AddRedhatAuthentication(SessionClaims.RedhatScheme, Config.RedhatClientId, Config.RedhatClientSecret, Config.RedhatOidcDiscoveryUri);
-            
+
             var webAgent = new RefreshTokenWebAgent(Config.RedditBotRefreshToken, Config.RedditBotId, Config.RedditBotSecret, Config.RedirectUri);
 
             services.AddSingleton(webAgent);
