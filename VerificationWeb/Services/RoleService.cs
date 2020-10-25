@@ -29,8 +29,6 @@ namespace VerificationWeb.Services
             bool isContributor = groups.Contains("cla/done");
             bool isDotnet = groups.Contains("dotnet-team");
 
-            // Maybe TODO, prepend name of the guild to the role name so the user can see where he got the roles?
-
             foreach (var guild in _client.Guilds)
             {
                 IGuildUser user = guild.GetUser(userId);
