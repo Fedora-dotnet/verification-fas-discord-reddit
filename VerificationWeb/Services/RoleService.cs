@@ -28,14 +28,18 @@ namespace VerificationWeb.Services
             bool isRedhat = groups.Contains("Redhat");
             bool isContributor = groups.Contains("cla/done");
             bool isDotnet = groups.Contains("dotnet-team");
-            
+
             // Maybe TODO, prepend name of the guild to the role name so the user can see where he got the roles?
-            
-            foreach (IGuild guild in _client.Guilds)
+
+            foreach (var guild in _client.Guilds)
             {
-                var user = await guild.GetUserAsync(userId); 
-                if (user == null)
-                    continue;
+                IGuildUser user = guild.GetUser(userId);
+                if (user == null) {
+                    user = await _client.Rest.GetGuildUserAsync(guild.Id, userId);
+                    if (user == null) {
+                        continue;
+                    }
+                }
 
                 if (isRedhat)
                 {
@@ -81,7 +85,7 @@ namespace VerificationWeb.Services
                         }
                     }
                 }
-                
+
                 await user.AddRolesAsync(rolesToAdd);
                 rolesToAdd.Clear();
             }
