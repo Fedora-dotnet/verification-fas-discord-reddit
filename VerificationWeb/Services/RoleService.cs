@@ -31,10 +31,10 @@ namespace VerificationWeb.Services
             
             // Maybe TODO, prepend name of the guild to the role name so the user can see where he got the roles?
             
-            foreach (var guild in _client.Guilds)
+            foreach (IGuild guild in _client.Guilds)
             {
-                
-                if (guild.GetUser(userId) == null)
+                var user = await guild.GetUserAsync(userId); 
+                if (user == null)
                     continue;
 
                 if (isRedhat)
@@ -82,7 +82,7 @@ namespace VerificationWeb.Services
                     }
                 }
                 
-                await guild.GetUser(userId).AddRolesAsync(rolesToAdd);
+                await user.AddRolesAsync(rolesToAdd);
                 rolesToAdd.Clear();
             }
 
