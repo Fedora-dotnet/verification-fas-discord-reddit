@@ -39,7 +39,7 @@ namespace VerificationWeb.Controllers
         public IActionResult Index()
         {
             if (!User.Identity.IsAuthenticated) return Unauthorized();
-            
+
             if (User.HasClaim(x => x.Issuer == SessionClaims.FedoraScheme))
             {
                 SetFedoraClaims();
@@ -75,15 +75,21 @@ namespace VerificationWeb.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-        
+
         private void SetFedoraClaims()
         {
             StringBuilder allGroups = new StringBuilder();
-                
-            if (User.HasClaim(x => x.Type == SessionClaims.Cla && x.Value.Contains("done")))
+
+            if( User.HasClaim(x => x.Type == SessionClaims.Agreements && x.Value.Contains("done")) )
                 allGroups.AppendLine("cla/done");
 
-            allGroups.AppendLine(User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Groups)?.Value);
+            foreach( var c in User.Claims.Where(x => x.Type == SessionClaims.Groups) )
+            {
+                if( c.Value == "signed_fpca" )
+                    allGroups.AppendLine("cla/done");
+
+                allGroups.AppendLine(c.Value);
+            }
 
             HttpContext.Session.SetString(SessionClaims.Groups, allGroups.ToString());
             HttpContext.Session.SetString(SessionClaims.Username, User.Claims.FirstOrDefault(x => x.Type == SessionClaims.Username)?.Value);

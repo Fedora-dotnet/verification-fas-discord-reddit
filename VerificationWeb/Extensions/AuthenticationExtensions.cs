@@ -22,8 +22,8 @@ namespace VerificationWeb.EXtensions
                 o.ClientSecret = clientSecret;
                 o.Authority = url;
                 o.Scope.Add($"{url}/scope/groups");
-                o.Scope.Add($"{url}/scope/cla");
-                o.ClaimActions.MapJsonKey(SessionClaims.Cla, SessionClaims.Cla);
+                o.Scope.Add($"{url}/scope/agreements");
+                o.ClaimActions.MapJsonKey(SessionClaims.Agreements, SessionClaims.Agreements);
                 o.ClaimActions.MapJsonKey(SessionClaims.Username, "nickname");
                 o.ClaimActions.MapJsonKey(SessionClaims.Groups, SessionClaims.Groups);
                 o.CallbackPath = "/signin-fedora";

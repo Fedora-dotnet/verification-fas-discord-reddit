@@ -3,7 +3,7 @@ namespace VerificationWeb.Models
     public static class SessionClaims
     {
         public static string Username = "username";
-        public static string Cla = "cla";
+        public static string Agreements = "agreements";
         public static string Groups = "groups";
         public static string FedoraScheme = "Fedora";
         public static string RedhatScheme = "Redhat";
