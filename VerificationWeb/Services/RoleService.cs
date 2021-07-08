@@ -29,22 +29,22 @@ namespace VerificationWeb.Services
             bool isContributor = groups.Contains("cla/done");
             bool isDotnet = groups.Contains("dotnet-team");
 
-            foreach (var guild in _client.Guilds)
+            foreach( var guild in _client.Guilds )
             {
                 IGuildUser user = guild.GetUser(userId);
-                if (user == null) {
+                if( user == null ) {
                     user = await _client.Rest.GetGuildUserAsync(guild.Id, userId);
-                    if (user == null) {
+                    if( user == null ) {
                         continue;
                     }
                 }
 
-                if (isRedhat)
+                if( isRedhat && Config.RedhatRoles != null )
                 {
-                    foreach (var roleId in Config.RedhatRoles)
+                    foreach( var roleId in Config.RedhatRoles )
                     {
                         var newRole = guild.GetRole(roleId);
-                        if (newRole != null)
+                        if( newRole != null )
                         {
                             rolesToAdd.Add(newRole);
                             roleNames.Add($"{guild.Name} - {newRole.Name}");
@@ -55,12 +55,12 @@ namespace VerificationWeb.Services
                 }
                 else
                 {
-                    if (isContributor)
+                    if( isContributor && Config.ContributorRoles != null )
                     {
-                        foreach (var roleId in Config.ContributorRoles)
+                        foreach( var roleId in Config.ContributorRoles )
                         {
                             var newRole = guild.GetRole(roleId);
-                            if (newRole != null)
+                            if( newRole != null )
                             {
                                 rolesToAdd.Add(newRole);
                                 roleNames.Add($"{guild.Name} - {newRole.Name}");
@@ -69,12 +69,12 @@ namespace VerificationWeb.Services
                         }
                     }
 
-                    if (isDotnet)
+                    if( isDotnet && Config.DotnetRoles != null )
                     {
-                        foreach (var roleId in Config.DotnetRoles)
+                        foreach( var roleId in Config.DotnetRoles )
                         {
                             var newRole = guild.GetRole(roleId);
-                            if (newRole != null)
+                            if( newRole != null )
                             {
                                 rolesToAdd.Add(newRole);
                                 roleNames.Add($"{guild.Name} - {newRole.Name}");
